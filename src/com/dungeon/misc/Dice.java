@@ -25,4 +25,14 @@ public class Dice {
 		return result;
 	}
 
+	/*
+	 * UTILITY METHODS
+	 */
+	public static <T> T randomFromArray(T[] array) {
+		T choice = array[Dice.roll(array.length) - 1];
+
+		return choice;
+	}
+
+
 }

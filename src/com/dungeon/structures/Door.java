@@ -50,26 +50,48 @@ public class Door extends Polygon {
 	public static int numberOfExits(Chamber c) {
 		int numberOfExits = 0, dice = Dice.roll(20);
 
-		if (dice >= 1 && dice <= 3)
+		switch (dice) {
+		case 1:
+		case 2:
+		case 3:
 			numberOfExits = 0;
-		else if (dice == 4 || dice == 5)
-			numberOfExits = (c.isLargeRoom()) ? 0 : 1;
-		else if (dice >= 6 && dice <= 8)
+			break;
+		case 4:
+		case 5:
+			numberOfExits = (c.isLargeRoom()) ? 1 : 0;
+			break;
+		case 6:
+		case 7:
+		case 8:
 			numberOfExits = 1;
-		else if (dice >= 9 && dice <= 11)
-			numberOfExits = (c.isLargeRoom()) ? 1 : 2;
-		else if (dice == 12 || dice == 13)
+			break;
+		case 9:
+		case 10:
+		case 11:
+			numberOfExits = (c.isLargeRoom()) ? 2 : 1;
+			break;
+		case 12:
+		case 13:
 			numberOfExits = 2;
-		else if (dice == 14 || dice == 15)
-			numberOfExits = (c.isLargeRoom()) ? 2 : 3;
-		else if (dice == 16 || dice == 17)
+			break;
+		case 14:
+		case 15:
+			numberOfExits = (c.isLargeRoom()) ? 3 : 2;
+			break;
+		case 16:
+		case 17:
 			numberOfExits = 3;
-		else if (dice == 18)
-			numberOfExits = (c.isLargeRoom()) ? 3 : 4;
-		else if (dice == 19)
-			numberOfExits = (c.isLargeRoom()) ? 4 : 5;
-		else if (dice == 20)
-			numberOfExits = (c.isLargeRoom()) ? 4 : 6;
+			break;
+		case 18:
+			numberOfExits = (c.isLargeRoom()) ? 4 : 3;
+			break;
+		case 19:
+			numberOfExits = (c.isLargeRoom()) ? 5 : 4;
+			break;
+		case 20:
+			numberOfExits = (c.isLargeRoom()) ? 6 : 4;
+			break;
+		}
 
 		return numberOfExits;
 	}

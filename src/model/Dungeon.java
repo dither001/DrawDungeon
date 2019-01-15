@@ -17,7 +17,7 @@ public class Dungeon extends JFrame {
 
 	private static final Point MIDPOINT = new Point(MAX_HORIZONTAL * 0.5, MAX_VERTICAL * 0.5);
 
-	private static final int WALL_LENGTH = 10;
+	public static final int WALL_LENGTH = 10;
 
 	/*
 	 * 
@@ -30,10 +30,10 @@ public class Dungeon extends JFrame {
 	static {
 		Point p = MIDPOINT.clone();
 		chambers = new ArrayList<Chamber>();
-		chambers.add(Chamber.makeChamber(MIDPOINT, WALL_LENGTH * 3, WALL_LENGTH * 3));
-		
+		// chambers.add(Chamber.makeChamber(MIDPOINT, Orientation.random()));
+
 		passages = new ArrayList<Passage>();
-//		passages.add(Passage.makePassage(p, Orientation.WEST, 30, 10));
+		// passages.add(Passage.makePassage(p, Orientation.WEST, 30, 10));
 
 		doors = new ArrayList<Door>();
 	}
@@ -44,6 +44,7 @@ public class Dungeon extends JFrame {
 	public Dungeon() {
 		super("Dungeon");
 
+		chambers.add(Chamber.makeChamber(this, MIDPOINT, Orientation.random()));
 		/*
 		 * LAST STEPS (IN ORDER)
 		 */
