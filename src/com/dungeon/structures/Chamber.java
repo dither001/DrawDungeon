@@ -9,7 +9,7 @@ import com.dungeon.misc.Dice;
 import model.Dungeon;
 
 public class Chamber extends Polygon {
-	private Dungeon dungeon;
+	public Dungeon dungeon;
 	private boolean isLargeRoom;
 	private boolean[] edges;
 
@@ -27,6 +27,9 @@ public class Chamber extends Polygon {
 		for (int i = 0; i < doors; ++i) {
 			// TODO - place doors
 		}
+
+		initializeDoors();
+		checkForDoors();
 
 		System.out.println(orient.toString());
 		System.out.println(isLargeRoom);
@@ -54,20 +57,81 @@ public class Chamber extends Polygon {
 		return isLargeRoom;
 	}
 
+	public int area() {
+		return length * height;
+	}
+
 	public int perimeter() {
 		return (2 * length + 2 * height);
 	}
-	
+
 	public int numberOfSegments() {
 		return perimeter() / Dungeon.WALL_LENGTH;
 	}
+
+	private void initializeDoors() {
+		for (int i = 0; i < edges.length; ++i)
+			edges[i] = false;
+	}
+
+	public void checkForDoors() {
+		int l = length / Dungeon.WALL_LENGTH;
+		int h = height / Dungeon.WALL_LENGTH;
+
+		double x = origin.x, y = origin.y;
+
+		boolean corner = false;
+		int counter = 0;
+		Orientation orient = Orientation.NORTH;
+		for (int i = 0; i < edges.length; ++i) {
+			// roll for door
+			if (edges[i] != true && Dice.roll(10) > 9)
+				edges[i] = true;
+
+			// make door
+			if (edges[i] && i == 0)
+				Dungeon.doors.add(Door.makeDoor(dungeon, origin.clone(), orient));
+			else if (edges[i])
+				Dungeon.doors.add(Door.makeDoor(dungeon, new Point(x, y), orient));
+
+			// adjust position after second corner
+			if (i + 1 == l + h) {
+				x -= Dungeon.WALL_LENGTH;
+			}
+
+			// adjust position after third corner
+			if (i + 1 == 2 * l + h) {
+				x += Dungeon.WALL_LENGTH;
+				y -= Dungeon.WALL_LENGTH;
+			}
+
+			if (i + counter < l) {
+				x += Dungeon.WALL_LENGTH;
+			} else if (i + counter < l + h) {
+				y += Dungeon.WALL_LENGTH;
+			} else if (i < l + h + l) {
+				x -= Dungeon.WALL_LENGTH;
+			} else {
+				y -= Dungeon.WALL_LENGTH;
+			}
+
+			if (corner) {
+				corner = false;
+				orient = orient.clockwise();
+			} else if (i + 2 == l) {
+				corner = true;
+			} else if (i + 2 == l + h) {
+				corner = true;
+			} else if (i + 2 == l + h + l) {
+				corner = true;
+			}
+		}
+
+	}
+
 	/*
 	 * STATIC METHODS
 	 */
-	public static boolean[] checkForDoors(boolean[] array) {
-		return array;
-	}
-
 	public static Chamber makeChamber(Dungeon dungeon, Point origin, Orientation orient) {
 		int dice = Dice.roll(20);
 		int length = 10, height = 10;

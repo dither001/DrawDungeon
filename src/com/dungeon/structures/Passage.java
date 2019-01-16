@@ -5,15 +5,20 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
+import model.Dungeon;
+
 public class Passage extends Polygon {
+	public Dungeon dungeon;
 	public Orientation orient;
 
 	/*
 	 * CONSTRUCTORS
 	 */
-	public Passage(Point origin, Orientation orient, int length, int height) {
-		this(origin, (Orientation.isNorthOrSouth(orient)) ? height : length,
-				(Orientation.isNorthOrSouth(orient)) ? length : height);
+	public Passage(Dungeon dungeon, Point origin, Orientation orient, int length, int height) {
+		this(origin, length, height);
+		// this(origin, (Orientation.isNorthOrSouth(orient)) ? height : length,
+		// (Orientation.isNorthOrSouth(orient)) ? length : height);
+		this.dungeon = dungeon;
 		this.orient = orient;
 	}
 
@@ -44,11 +49,58 @@ public class Passage extends Polygon {
 		}
 	}
 
+	public int area() {
+		return length * height;
+	}
+
+	public int perimeter() {
+		return (2 * length + 2 * height);
+	}
+
+	public int numberOfSegments() {
+		return perimeter() / Dungeon.WALL_LENGTH;
+	}
+
 	/*
 	 * STATIC METHODS
 	 */
-	public static Passage makePassage(Point origin, Orientation orient, int length, int height) {
-		return new Passage(origin.clone(), orient, length, height);
+	public static Passage makePassage(Dungeon d, Point o1, Orientation o2) {
+		// TODO - random passage
+		return makePassage(d, o1.clone(), o2, 30, 10);
 	}
+
+	public static Passage makePassage(Dungeon d, Point o1, Orientation o2, int length, int width) {
+		int l, h;
+		if (Orientation.isNorthOrSouth(o2)) {
+			l = length;
+			h = width;
+		} else {
+			l = length;
+			h = width;
+		}
+
+		Point p = null;
+		switch (o2) {
+		case EAST:
+			p = o1.clone();
+			break;
+		case NORTH:
+			p = new Point(o1.x, o1.y + l);
+			break;
+		case SOUTH:
+			p = o1.clone();
+			break;
+		case WEST:
+			p = new Point(o1.x + l, o1.y);
+			break;
+		}
+
+		return new Passage(d, p, o2, l, h);
+	}
+
+	// private static Passage makePassage(Dungeon dungeon, Point o1, Orientation o2,
+	// int length, int width) {
+	// return new Passage(dungeon, o1.clone(), o2, length, width);
+	// }
 
 }

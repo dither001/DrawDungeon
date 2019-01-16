@@ -5,6 +5,29 @@ import com.dungeon.misc.Dice;
 public enum Orientation {
 	NORTH, SOUTH, EAST, WEST;
 
+	public Orientation clockwise() {
+		Orientation direction = null;
+
+		switch (this) {
+		case EAST:
+			direction = SOUTH;
+			break;
+		case NORTH:
+			direction = EAST;
+			break;
+		case SOUTH:
+			direction = WEST;
+			break;
+		case WEST:
+			direction = NORTH;
+			break;
+		default:
+			break;
+		}
+
+		return direction;
+	}
+
 	/*
 	 * STATIC METHODS
 	 */

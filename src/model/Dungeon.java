@@ -14,7 +14,9 @@ import com.dungeon.structures.*;
 public class Dungeon extends JFrame {
 	private static final int MAX_HORIZONTAL = 800;
 	private static final int MAX_VERTICAL = 600;
+	private static final double AREA_TO_MAP = 66.67;
 
+	private static final int TOTAL_AREA = MAX_HORIZONTAL * MAX_VERTICAL;
 	private static final Point MIDPOINT = new Point(MAX_HORIZONTAL * 0.5, MAX_VERTICAL * 0.5);
 
 	public static final int WALL_LENGTH = 10;
@@ -23,9 +25,9 @@ public class Dungeon extends JFrame {
 	 * 
 	 */
 	private static double scale = 1.0;
-	private static List<Chamber> chambers;
-	private static List<Passage> passages;
-	private static List<Door> doors;
+	public static List<Chamber> chambers;
+	public static List<Passage> passages;
+	public static List<Door> doors;
 
 	static {
 		Point p = MIDPOINT.clone();
@@ -45,6 +47,11 @@ public class Dungeon extends JFrame {
 		super("Dungeon");
 
 		chambers.add(Chamber.makeChamber(this, MIDPOINT, Orientation.random()));
+
+		int length = doors.size();
+		for (int i = 0; i < length; ++i)
+			doors.get(i).beyondDoor();
+
 		/*
 		 * LAST STEPS (IN ORDER)
 		 */
@@ -61,11 +68,11 @@ public class Dungeon extends JFrame {
 	public void paint(Graphics g) {
 
 		g.setColor(Color.BLUE);
-		for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
-			g.drawLine(i, 0, i, MAX_VERTICAL);
-
-		for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
-			g.drawLine(0, i, MAX_HORIZONTAL, i);
+//		for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
+//			g.drawLine(i, 0, i, MAX_VERTICAL);
+//
+//		for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
+//			g.drawLine(0, i, MAX_HORIZONTAL, i);
 
 		for (Chamber el : chambers)
 			el.paint(g);
@@ -75,26 +82,22 @@ public class Dungeon extends JFrame {
 
 		for (Door el : doors)
 			el.paint(g);
+	}
 
-		/*
-		 * LEFTOVER TESTING
-		 */
+	private boolean mappingDone() {
+		return mappedArea() / TOTAL_AREA > AREA_TO_MAP;
+	}
 
-		// g.setColor(Color.BLACK);
-		// g.fillOval((int) MIDPOINT.x, (int) MIDPOINT.y, WALL_LENGTH, WALL_LENGTH);
+	private int mappedArea() {
+		int area = 0;
 
-		// g.setColor(Color.BLACK);
-		// g.drawOval(40, 40, 60, 60); // FOR CIRCLE
-		//
-		// g.setColor(Color.WHITE);
-		// g.fillRect(80, 30, 200, 200); // FOR SQUARE
-		// g.setColor(Color.BLACK);
-		// g.drawRect(80, 30, 200, 200); // FOR SQUARE
-		//
-		// g.setColor(Color.WHITE);
-		// g.fillRect(200, 100, 100, 200); // FOR RECT
-		// g.setColor(Color.BLACK);
-		// g.drawRect(200, 100, 100, 200); // FOR RECT
+		for (Chamber el : chambers)
+			area += el.area();
+
+		for (Passage el : passages)
+			area += el.area();
+
+		return area;
 	}
 
 	/*

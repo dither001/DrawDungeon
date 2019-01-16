@@ -6,15 +6,21 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.*;
 
+import model.Dungeon;
+
 public class Door extends Polygon {
+	private Dungeon dungeon;
 	public Orientation orient;
+	public boolean rolled;
 
 	/*
 	 * CONSTRUCTORS
 	 */
-	public Door(Point origin, Orientation orient) {
+	public Door(Dungeon dungeon, Point origin, Orientation orient) {
 		this(origin, Orientation.isNorthOrSouth(orient) ? 8 : 4, Orientation.isNorthOrSouth(orient) ? 4 : 8);
+		this.dungeon = dungeon;
 		this.orient = orient;
+		this.rolled = false;
 	}
 
 	public Door(Point origin, int length, int height) {
@@ -26,11 +32,11 @@ public class Door extends Polygon {
 		int top, left;
 
 		if (Orientation.isNorthOrSouth(orient)) {
-			left = (int) (origin.x + (length / 4));
-			top = (int) (origin.y - (height / 4));
+			left = (int) (origin.x + (length / 4) - 1);
+			top = (int) (origin.y - (height / 4) - 1);
 		} else {
-			left = (int) (origin.x - (length / 4));
-			top = (int) (origin.y + (height / 4));
+			left = (int) (origin.x - (length / 4) - 1);
+			top = (int) (origin.y + (height / 4) - 1);
 		}
 
 		g.setColor(Color.WHITE);
@@ -40,11 +46,80 @@ public class Door extends Polygon {
 		g.drawRect(left, top, length, height);
 	}
 
+	public void checkOtherSideOfDoor() {
+		if (rolled != true) {
+			rolled = true;
+			beyondDoor();
+		}
+	}
+
+	public void beyondDoor() {
+
+		Point p = null;
+		switch (orient) {
+		case EAST:
+			p = new Point(origin.x + 10, origin.y);
+			break;
+		case NORTH:
+			p = new Point(origin.x, origin.y + 10);
+			break;
+		case SOUTH:
+			p = origin.clone();
+			break;
+		case WEST:
+			p = new Point(origin.x - 10, origin.y);
+			break;
+		}
+
+		int dice = Dice.roll(20);
+
+		switch (dice) {
+		case 1:
+		case 2:
+			// TODO t-intersection
+			System.out.printf("Opened door %s to t-intersection.\n", orient.toString());
+			Dungeon.passages.add(Passage.makePassage(dungeon, p, orient));
+			break;
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+			// TODO
+			System.out.printf("Opened door %s to passage.\n", orient.toString());
+			Dungeon.passages.add(Passage.makePassage(dungeon, p, orient, 20, 10));
+			break;
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+		case 15:
+		case 16:
+		case 17:
+		case 18:
+			// TODO - chambers
+			System.out.printf("Opened door to chamber.\n", orient.toString());
+			Dungeon.chambers.add(Chamber.makeChamber(dungeon, origin, orient));
+			break;
+		case 19:
+			// TODO - stairs
+			System.out.printf("Opened door %s to stairs.\n", orient.toString());
+			break;
+		case 20:
+			// TODO - false door w/trap
+			System.out.printf("False %s door.\n", orient.toString());
+			break;
+		}
+	}
+
 	/*
 	 * 
 	 */
-	public static Door makeDoor(Point origin, Orientation orient) {
-		return new Door(origin, orient);
+	public static Door makeDoor(Dungeon dungeon, Point origin, Orientation orient) {
+		return new Door(dungeon, origin, orient);
 	}
 
 	public static int numberOfExits(Chamber c) {
