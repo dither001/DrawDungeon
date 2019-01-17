@@ -28,6 +28,22 @@ public enum Orientation {
 		return direction;
 	}
 
+	public boolean isNorth() {
+		return this.equals(NORTH);
+	}
+
+	public boolean isSouth() {
+		return this.equals(SOUTH);
+	}
+
+	public boolean isEast() {
+		return this.equals(EAST);
+	}
+
+	public boolean isWest() {
+		return this.equals(WEST);
+	}
+
 	/*
 	 * STATIC METHODS
 	 */
