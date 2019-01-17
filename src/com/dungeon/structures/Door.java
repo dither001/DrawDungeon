@@ -58,16 +58,18 @@ public class Door extends Polygon {
 		Point p = null;
 		switch (orient) {
 		case EAST:
-			p = new Point(origin.x + 10, origin.y);
+			p = origin.clone();
 			break;
 		case NORTH:
-			p = new Point(origin.x, origin.y + 10);
+			p = origin.clone();
+			// p = new Point(origin.x, origin.y);
 			break;
 		case SOUTH:
 			p = origin.clone();
 			break;
 		case WEST:
-			p = new Point(origin.x - 10, origin.y);
+			p = origin.clone();
+			// p = new Point(origin.x - 10, origin.y);
 			break;
 		}
 
@@ -77,8 +79,8 @@ public class Door extends Polygon {
 		case 1:
 		case 2:
 			// TODO t-intersection
-			System.out.printf("Opened door %s to t-intersection.\n", orient.toString());
-			Dungeon.passages.add(Passage.makePassage(dungeon, p, orient));
+			// System.out.printf("Opened door %s to t-intersection.\n", orient.toString());
+			// Dungeon.passages.add(Passage.makePassage(dungeon, p, orient));
 			break;
 		case 3:
 		case 4:
@@ -86,9 +88,12 @@ public class Door extends Polygon {
 		case 6:
 		case 7:
 		case 8:
-			// TODO
-			System.out.printf("Opened door %s to passage.\n", orient.toString());
-			Dungeon.passages.add(Passage.makePassage(dungeon, p, orient, 20, 10));
+			/*
+			 * TODO - FINISHED; there should be multiple steps here -- 1) create a passage
+			 * or chamber, 2) validate its placement, 3) add the passage to the List
+			 */
+			// System.out.printf("Opened door %s to passage.\n", orient.toString());
+			// Dungeon.passages.add(Passage.makePassage(dungeon, p, orient, 20, 10));
 			break;
 		case 9:
 		case 10:
@@ -101,18 +106,22 @@ public class Door extends Polygon {
 		case 17:
 		case 18:
 			// TODO - chambers
-			System.out.printf("Opened door to chamber.\n", orient.toString());
-			Dungeon.chambers.add(Chamber.makeChamber(dungeon, origin, orient));
+			// System.out.printf("Opened door to chamber.\n", orient.toString());
+			// Dungeon.chambers.add(Chamber.makeChamber(dungeon, origin, orient));
 			break;
 		case 19:
 			// TODO - stairs
-			System.out.printf("Opened door %s to stairs.\n", orient.toString());
+			// System.out.printf("Opened door %s to stairs.\n", orient.toString());
 			break;
 		case 20:
 			// TODO - false door w/trap
-			System.out.printf("False %s door.\n", orient.toString());
+			// System.out.printf("False %s door.\n", orient.toString());
 			break;
 		}
+
+		// FIXME
+		System.out.printf("Opened door %s to passage.\n", orient.toString());
+		Dungeon.passages.add(Segment.makePassage(dungeon, p, orient, 30, 10));
 	}
 
 	/*

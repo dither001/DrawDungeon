@@ -51,6 +51,11 @@ public class Chamber extends Polygon {
 
 		g.setColor(Color.BLACK);
 		g.drawRect((int) origin.x, (int) origin.y, length, height);
+
+		if (Dungeon.showOrigins) {
+			g.setColor(Color.green);
+			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
+		}
 	}
 
 	public boolean isLargeRoom() {
@@ -85,7 +90,7 @@ public class Chamber extends Polygon {
 		Orientation orient = Orientation.NORTH;
 		for (int i = 0; i < edges.length; ++i) {
 			// roll for door
-			if (edges[i] != true && Dice.roll(10) > 9)
+			if (edges[i] != true && Dice.roll(10) > 5)
 				edges[i] = true;
 
 			// make door
