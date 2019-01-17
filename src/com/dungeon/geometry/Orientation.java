@@ -28,6 +28,29 @@ public enum Orientation {
 		return direction;
 	}
 
+	public Orientation counterClockwise() {
+		Orientation direction = null;
+
+		switch (this) {
+		case EAST:
+			direction = NORTH;
+			break;
+		case NORTH:
+			direction = WEST;
+			break;
+		case SOUTH:
+			direction = EAST;
+			break;
+		case WEST:
+			direction = SOUTH;
+			break;
+		default:
+			break;
+		}
+
+		return direction;
+	}
+
 	public boolean isNorth() {
 		return this.equals(NORTH);
 	}

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
+import com.dungeon.misc.Dice;
 
 import model.Dungeon;
 
@@ -11,11 +12,13 @@ public class Segment extends Passage {
 	/*
 	 * CONSTRUCTORS
 	 */
-	public Segment(Dungeon dungeon, Point origin, Orientation orient, int length, int height) {
+	private Segment(Dungeon dungeon, Point origin, Orientation orient, int length, int height) {
 		this(origin, length, height);
 
 		this.dungeon = dungeon;
 		this.orient = orient;
+
+		this.isDeadEnd = false;
 		this.advanced = false;
 	}
 
@@ -45,16 +48,36 @@ public class Segment extends Passage {
 			g.drawLine(left, bottom, right, bottom);
 		}
 
+		if (isDeadEnd) {
+			switch (orient) {
+			case EAST:
+				g.drawLine(right, top, right, bottom);
+				break;
+			case NORTH:
+				g.drawLine(left, top, right, top);
+				break;
+			case SOUTH:
+				g.drawLine(left, bottom, right, bottom);
+				break;
+			case WEST:
+				g.drawLine(left, top, left, bottom);
+				break;
+			}
+		}
+
 		if (Dungeon.showOrigins) {
 			g.setColor(Color.green);
 			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
 		}
 	}
 
+	@Override
 	public void advance() {
 		if (advanced != true) {
 			advanced = true;
+
 			int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
+			int w = (Orientation.isNorthOrSouth(orient)) ? length : height;
 
 			Point p = null;
 			switch (orient) {
@@ -72,14 +95,62 @@ public class Segment extends Passage {
 				break;
 			}
 
-			// TODO - should be more complex than this
-			Segment pass = makePassage(dungeon, p, orient, 30, 10);
-			if (pass.validPassage())
-				Dungeon.passages.add(pass);
+			int dice = Dice.roll(20);
+			Passage pass = null;
+			switch (dice) {
+			case 1:
+			case 2:
+				// FINISHED
+				pass = makePassage(dungeon, p, orient, 30, 10);
+				if (pass.validPassage())
+					Dungeon.passages.add(pass);
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				// DEAD END
+				pass = makePassage(dungeon, p, orient, 20, 10);
+				pass.makeDeadEnd();
+				if (pass.validPassage())
+					Dungeon.passages.add(pass);
+				break;
+			case 11:
+			case 12:
+				// LEFT TURN
+				pass = Bend.makeBend(dungeon, p, orient, false, w);
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					pass.advance();
+				}
+				break;
+			case 13:
+			case 14:
+				// RIGHT TURN
+				pass = Bend.makeBend(dungeon, p, orient, true, w);
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					pass.advance();
+				}
+				break;
+			case 15:
+			case 16:
+			case 17:
+			case 18:
+			case 19:
+			case 20:
+				break;
+			}
+
 		}
 	}
 
-	private boolean validPassage() {
+	@Override
+	public boolean validPassage() {
 		boolean valid = true;
 		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
 
@@ -138,5 +209,4 @@ public class Segment extends Passage {
 
 		return new Segment(d, p, o2, l, h);
 	}
-
 }
