@@ -66,14 +66,21 @@ public class Door extends Polygon {
 			// break;
 			// }
 
+			Passage pass = null;
 			int dice = Dice.roll(20);
 
 			switch (dice) {
 			case 1:
 			case 2:
-				// TODO t-intersection
-				// System.out.printf("Opened door %s to t-intersection.\n", orient.toString());
-				// Dungeon.passages.add(Passage.makePassage(dungeon, p, orient));
+				// t-intersection
+				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
+				Passage t = Intersection.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
+				if (pass.validPassage() && t.validPassage()) {
+					pass.advanced = true;
+					Dungeon.passages.add(pass);
+					Dungeon.passages.add(t);
+					System.out.printf("Door opened %s to t-intersection.\n", orient.toString());
+				}
 				break;
 			case 3:
 			case 4:
@@ -81,14 +88,12 @@ public class Door extends Polygon {
 			case 6:
 			case 7:
 			case 8:
-				/*
-				 * TODO - FINISHED; there should be multiple steps here -- 1) create a passage
-				 * or chamber, 2) validate its placement, 3) add the passage to the List
-				 */
-//				System.out.printf("Opened door %s to passage.\n", orient.toString());
-//				Passage pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
-//				if (pass.validPassage())
-//					Dungeon.passages.add(pass);
+				// 20-ft straight passage
+				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					System.out.printf("Opened door %s to passage.\n", orient.toString());
+				}
 				break;
 			case 9:
 			case 10:
@@ -115,11 +120,11 @@ public class Door extends Polygon {
 			}
 
 			// FIXME
-			Passage pass = Segment.makePassage(dungeon, origin, orient, 30, 10);
-			if (pass.validPassage()) {
-				Dungeon.passages.add(pass);
-				System.out.printf("Door opened %s to 30-foot passage.\n", orient.toString());
-			}
+			// pass = Segment.makePassage(dungeon, origin, orient, 30, 10);
+			// if (pass.validPassage()) {
+			// Dungeon.passages.add(pass);
+			// System.out.printf("Door opened %s to 30-foot passage.\n", orient.toString());
+			// }
 
 		}
 	}

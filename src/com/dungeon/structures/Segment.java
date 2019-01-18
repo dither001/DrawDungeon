@@ -79,21 +79,21 @@ public class Segment extends Passage {
 			int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
 			int w = (Orientation.isNorthOrSouth(orient)) ? length : height;
 
-			Point p = null;
-			switch (orient) {
-			case EAST:
-				p = new Point(origin.x + l, origin.y);
-				break;
-			case NORTH:
-				p = origin;
-				break;
-			case SOUTH:
-				p = new Point(origin.x, origin.y + l);
-				break;
-			case WEST:
-				p = origin;
-				break;
-			}
+			Point p = nextPoint();
+			// switch (orient) {
+			// case EAST:
+			// p = new Point(origin.x + l, origin.y);
+			// break;
+			// case NORTH:
+			// p = origin;
+			// break;
+			// case SOUTH:
+			// p = new Point(origin.x, origin.y + l);
+			// break;
+			// case WEST:
+			// p = origin;
+			// break;
+			// }
 
 			int dice = Dice.roll(20);
 			Passage pass = null;
@@ -159,6 +159,29 @@ public class Segment extends Passage {
 			}
 
 		}
+	}
+
+	@Override
+	public Point nextPoint() {
+		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
+
+		Point point = null;
+		switch (orient) {
+		case EAST:
+			point = new Point(origin.x + l, origin.y);
+			break;
+		case NORTH:
+			point = origin;
+			break;
+		case SOUTH:
+			point = new Point(origin.x, origin.y + l);
+			break;
+		case WEST:
+			point = origin;
+			break;
+		}
+
+		return point;
 	}
 
 	@Override

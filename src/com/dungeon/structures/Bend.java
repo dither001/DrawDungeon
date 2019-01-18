@@ -41,7 +41,6 @@ public class Bend extends Passage {
 			int l = Dungeon.WALL_LENGTH;
 
 			Point p = null;
-			// p = new Point(origin.x - Dungeon.WALL_LENGTH, origin.y);
 
 			if (isRightTurn && orient.isNorth()) {
 				p = new Point(origin.x + l, origin.y);
@@ -122,6 +121,40 @@ public class Bend extends Passage {
 			g.setColor(Color.green);
 			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
 		}
+	}
+
+	@Override
+	public Point nextPoint() {
+		Point point = null;
+		int l = Dungeon.WALL_LENGTH;
+
+		if (isRightTurn && orient.isNorth()) {
+			point = new Point(origin.x + l, origin.y);
+
+		} else if (orient.isNorth()) {
+			point = origin.clone();
+
+		} else if (isRightTurn && orient.isSouth()) {
+			point = origin.clone();
+
+		} else if (orient.isSouth()) {
+			point = new Point(origin.x + l, origin.y);
+
+		} else if (isRightTurn && orient.isEast()) {
+			point = new Point(origin.x, origin.y + l);
+
+		} else if (orient.isEast()) {
+			point = origin.clone();
+
+		} else if (isRightTurn && orient.isWest()) {
+			point = new Point(origin.x, origin.y);
+
+		} else if (orient.isWest()) {
+			point = new Point(origin.x, origin.y + l);
+
+		}
+
+		return point;
 	}
 
 	/*

@@ -35,6 +35,10 @@ public abstract class Passage extends Polygon {
 		advanced = true;
 	}
 
+	public Point nextPoint() {
+		return null;
+	}
+	
 	public int numberOfSegments() {
 		return perimeter() / Dungeon.WALL_LENGTH;
 	}
