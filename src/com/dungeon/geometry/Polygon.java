@@ -11,6 +11,13 @@ public abstract class Polygon implements Shape {
 		this.origin = origin;
 		this.length = length;
 		this.height = height;
+
+		Point tl = new Point(origin.x, origin.y);
+		Point tr = new Point(origin.x + length, origin.y);
+		Point br = new Point(origin.x + length, origin.y + height);
+		Point bl = new Point(origin.x, origin.y + height);
+
+		this.shape = new Point[] { tl, tr, br, bl };
 	}
 
 	// Applies offset to shape of polygon
@@ -76,7 +83,6 @@ public abstract class Polygon implements Shape {
 
 	private Point findCenter() {
 		Point sum = new Point(0, 0);
-
 		for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
 			sum.x += (shape[i].x + shape[j].x) * (shape[i].x * shape[j].y - shape[j].x * shape[i].y);
 			sum.y += (shape[i].y + shape[j].y) * (shape[i].x * shape[j].y - shape[j].x * shape[i].y);
@@ -85,5 +91,4 @@ public abstract class Polygon implements Shape {
 		double area = findArea();
 		return new Point(Math.abs(sum.x / (6 * area)), Math.abs(sum.y / (6 * area)));
 	}
-
 }

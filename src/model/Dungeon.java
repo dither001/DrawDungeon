@@ -28,11 +28,15 @@ public class Dungeon extends JFrame {
 	 * 
 	 */
 	private static double scale = 1.0;
+	public static Cursor cursor;
+
 	public static List<Chamber> chambers;
 	public static List<Passage> passages;
 	public static List<Door> doors;
 
 	static {
+		cursor = new Cursor(MIDPOINT);
+
 		chambers = new ArrayList<Chamber>();
 		passages = new ArrayList<Passage>();
 		doors = new ArrayList<Door>();
@@ -64,6 +68,10 @@ public class Dungeon extends JFrame {
 		// FIXME - for testing
 		System.out.println(passages.size());
 
+		cursor.setShape(chambers.get(0));
+		for (Point el : cursor.getPoints())
+			System.out.println(el.toString());
+
 		/*
 		 * LAST STEPS (IN ORDER)
 		 */
@@ -80,23 +88,28 @@ public class Dungeon extends JFrame {
 	public void paint(Graphics g) {
 
 		g.setColor(Color.BLUE);
-//		for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
-//			g.drawLine(i, 0, i, MAX_VERTICAL);
-//
-//		for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
-//			g.drawLine(0, i, MAX_HORIZONTAL, i);
+		// for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
+		// g.drawLine(i, 0, i, MAX_VERTICAL);
+		//
+		// for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
+		// g.drawLine(0, i, MAX_HORIZONTAL, i);
 
-		for (Chamber el : chambers)
+		for (Chamber el : chambers) {
+			el.paint(g);
+			// check for collision with Cursor
+
+		}
+
+		for (Passage el : passages) {
 			el.paint(g);
 
-		for (Passage el : passages)
-			el.paint(g);
+		}
 
 		for (Door el : doors)
 			el.paint(g);
 
-		// g.setColor(Color.RED);
-		// g.fillOval((int) MIDPOINT.x, (int) MIDPOINT.y, 10, 10);
+		g.setColor(Color.RED);
+		cursor.paint(g);
 	}
 
 	private void advancePassages() {
