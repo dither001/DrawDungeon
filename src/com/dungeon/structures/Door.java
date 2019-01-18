@@ -11,7 +11,9 @@ import model.Dungeon;
 public class Door extends Polygon {
 	private Dungeon dungeon;
 	public Orientation orient;
-	public boolean rolled;
+
+	public boolean isSecret;
+	public boolean advanced;
 
 	/*
 	 * CONSTRUCTORS
@@ -20,7 +22,8 @@ public class Door extends Polygon {
 		this(origin, Orientation.isNorthOrSouth(orient) ? 8 : 4, Orientation.isNorthOrSouth(orient) ? 4 : 8);
 		this.dungeon = dungeon;
 		this.orient = orient;
-		this.rolled = false;
+
+		this.advanced = false;
 	}
 
 	public Door(Point origin, int length, int height) {
@@ -43,12 +46,32 @@ public class Door extends Polygon {
 		g.fillRect(left, top, length, height);
 
 		g.setColor(Color.BLACK);
-		g.drawRect(left, top, length, height);
+		if (isSecret) {
+			int x = (int) origin.x, y = (int) origin.y;
+			switch (orient) {
+			case EAST:
+			case WEST:
+				x -= length / 2 + 1;
+				y += height + 2;
+				break;
+			case NORTH:
+			case SOUTH:
+				x += length / 4 - 1;
+				y += height;
+				break;
+			}
+
+			g.drawString("S", x, y);
+
+		} else {
+			g.drawRect(left, top, length, height);
+
+		}
 	}
 
 	public void advance() {
-		if (rolled != true) {
-			rolled = true;
+		if (advanced != true) {
+			advanced = true;
 
 			// Point p = null;
 			// switch (orient) {
@@ -67,12 +90,12 @@ public class Door extends Polygon {
 			// }
 
 			Passage pass = null;
-			int dice = Dice.roll(20);
+			int dice = Dice.roll(10);
 
 			switch (dice) {
 			case 1:
 			case 2:
-				// t-intersection
+				// FINISHED: t-intersection
 				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
 				Passage t = Intersection.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
 				if (pass.validPassage() && t.validPassage()) {
@@ -88,7 +111,7 @@ public class Door extends Polygon {
 			case 6:
 			case 7:
 			case 8:
-				// 20-ft straight passage
+				// FINISHED: 20-ft straight passage
 				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
 				if (pass.validPassage()) {
 					Dungeon.passages.add(pass);
@@ -119,19 +142,58 @@ public class Door extends Polygon {
 				break;
 			}
 
-			// FIXME
-			// pass = Segment.makePassage(dungeon, origin, orient, 30, 10);
-			// if (pass.validPassage()) {
-			// Dungeon.passages.add(pass);
-			// System.out.printf("Door opened %s to 30-foot passage.\n", orient.toString());
-			// }
-
 		}
 	}
 
 	/*
 	 * 
 	 */
+	public static Door makeLeftSideDoor(Passage passage) {
+		Point p = passage.nextPoint();
+		Orientation o = passage.orient.counterClockwise();
+		int l = Dungeon.WALL_LENGTH;
+
+		switch (passage.orient) {
+		case EAST:
+			p = new Point(p.x - 2 * l, p.y);
+			break;
+		case NORTH:
+			p = new Point(p.x, p.y + l);
+			break;
+		case SOUTH:
+			p = new Point(p.x + l, p.y - 2 * l);
+			break;
+		case WEST:
+			p = new Point(p.x + l, p.y + l);
+			break;
+		}
+
+		return makeDoor(passage.dungeon, p, o);
+	}
+
+	public static Door makeRightSideDoor(Passage passage) {
+		Point p = passage.nextPoint();
+		Orientation o = passage.orient.counterClockwise();
+		int l = Dungeon.WALL_LENGTH;
+
+		switch (passage.orient) {
+		case EAST:
+			p = new Point(p.x - 2 * l, p.y + l);
+			break;
+		case NORTH:
+			p = new Point(p.x + l, p.y + l);
+			break;
+		case SOUTH:
+			p = new Point(p.x, p.y - 2 * l);
+			break;
+		case WEST:
+			p = new Point(p.x + l, p.y);
+			break;
+		}
+
+		return makeDoor(passage.dungeon, p, o);
+	}
+
 	public static Door makeDoor(Dungeon dungeon, Point origin, Orientation orient) {
 		return new Door(dungeon, origin, orient);
 	}

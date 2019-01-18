@@ -44,7 +44,25 @@ public abstract class Passage extends Polygon {
 	}
 
 	public boolean validPassage() {
-		return true;
+		boolean valid = true;
+		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
+
+		switch (orient) {
+		case EAST:
+			valid = (origin.x + l > Dungeon.MAX_HORIZONTAL - 20) ? false : valid;
+			break;
+		case NORTH:
+			valid = (origin.y < 40) ? false : valid;
+			break;
+		case SOUTH:
+			valid = (origin.y + l > Dungeon.MAX_VERTICAL - 20) ? false : valid;
+			break;
+		case WEST:
+			valid = (origin.x < 20) ? false : valid;
+			break;
+		}
+
+		return valid;
 	}
 
 }

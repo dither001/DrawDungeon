@@ -60,20 +60,20 @@ public class Intersection extends Passage {
 			int l = Dungeon.WALL_LENGTH;
 
 			if (orient.isNorth()) {
-				lp = new Point(origin.x + l, origin.y);
 				rp = origin.clone();
+				lp = new Point(origin.x + l, origin.y);
 
 			} else if (orient.isSouth()) {
-				lp = origin.clone();
 				rp = new Point(origin.x + l, origin.y);
+				lp = origin.clone();
 
 			} else if (orient.isEast()) {
-				lp = new Point(origin.x, origin.y + l);
 				rp = origin.clone();
+				lp = new Point(origin.x, origin.y + l);
 
 			} else if (orient.isWest()) {
-				lp = origin.clone();
 				rp = new Point(origin.x, origin.y + l);
+				lp = origin.clone();
 
 			}
 

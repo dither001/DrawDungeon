@@ -44,7 +44,7 @@ public class Dungeon extends JFrame {
 	public Dungeon() {
 		super("Dungeon");
 
-		Orientation o = Orientation.WEST;
+		Orientation o = Orientation.NORTH;
 		// for (int i = 0; i < 4; ++i) {
 		// passages.add(Passage.makePassage(this, MIDPOINT, o));
 		// System.out.println(o.toString());
@@ -80,11 +80,11 @@ public class Dungeon extends JFrame {
 	public void paint(Graphics g) {
 
 		g.setColor(Color.BLUE);
-		for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
-			g.drawLine(i, 0, i, MAX_VERTICAL);
-
-		for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
-			g.drawLine(0, i, MAX_HORIZONTAL, i);
+//		for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
+//			g.drawLine(i, 0, i, MAX_VERTICAL);
+//
+//		for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
+//			g.drawLine(0, i, MAX_HORIZONTAL, i);
 
 		for (Chamber el : chambers)
 			el.paint(g);

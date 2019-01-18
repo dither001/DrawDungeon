@@ -79,24 +79,11 @@ public class Segment extends Passage {
 			int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
 			int w = (Orientation.isNorthOrSouth(orient)) ? length : height;
 
+			Passage pass = null, side = null;
+			Door door = null;
 			Point p = nextPoint();
-			// switch (orient) {
-			// case EAST:
-			// p = new Point(origin.x + l, origin.y);
-			// break;
-			// case NORTH:
-			// p = origin;
-			// break;
-			// case SOUTH:
-			// p = new Point(origin.x, origin.y + l);
-			// break;
-			// case WEST:
-			// p = origin;
-			// break;
-			// }
-
 			int dice = Dice.roll(20);
-			Passage pass = null;
+
 			switch (dice) {
 			case 1:
 			case 2:
@@ -109,10 +96,50 @@ public class Segment extends Passage {
 				}
 				break;
 			case 3:
+				// TODO: door on the left (testing)
+				pass = makePassage(dungeon, p, orient, 40, 10);
+				pass.advanced = false;
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					door = Door.makeLeftSideDoor(pass);
+					Dungeon.doors.add(door);
+					System.out.printf("Door on the %s wall.\n", door.orient.toString());
+				}
+				break;
 			case 4:
+				// TODO: door on the right (testing)
+				pass = makePassage(dungeon, p, orient, 40, 10);
+				pass.advanced = false;
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					door = Door.makeRightSideDoor(pass);
+					Dungeon.doors.add(door);
+					System.out.printf("Door on the %s wall.\n", door.orient.toString());
+				}
+				break;
 			case 5:
+				// FINISHED: 20-ft passage ends in door
+				pass = makePassage(dungeon, p, orient, 20, 10);
+				pass.makeDeadEnd();
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					System.out.printf("%s-facing passage ends at a door.\n", orient.toString());
+					Dungeon.doors.add(Door.makeDoor(dungeon, pass.nextPoint(), orient));
+				}
+				break;
 			case 6:
 			case 7:
+				// TODO: right side passage (testing)
+				pass = makePassage(dungeon, p, orient, 20, 10);
+				side = SidePassage.makeSidePassage(dungeon, pass.nextPoint(), orient, true, 10);
+				if (pass.validPassage() && side.validPassage()) {
+					Dungeon.passages.add(pass);
+					pass.advanced = true;
+					Dungeon.passages.add(side);
+					side.advance();
+					System.out.printf("Side passage on %s wall.\n", side.orient.clockwise().toString());
+				}
+				break;
 			case 8:
 			case 9:
 			case 10:
@@ -171,40 +198,17 @@ public class Segment extends Passage {
 			point = new Point(origin.x + l, origin.y);
 			break;
 		case NORTH:
-			point = origin;
+			point = origin.clone();
 			break;
 		case SOUTH:
 			point = new Point(origin.x, origin.y + l);
 			break;
 		case WEST:
-			point = origin;
+			point = origin.clone();
 			break;
 		}
 
 		return point;
-	}
-
-	@Override
-	public boolean validPassage() {
-		boolean valid = true;
-		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
-
-		switch (orient) {
-		case EAST:
-			valid = (origin.x + l > Dungeon.MAX_HORIZONTAL - 20) ? false : valid;
-			break;
-		case NORTH:
-			valid = (origin.y < 40) ? false : valid;
-			break;
-		case SOUTH:
-			valid = (origin.y + l > Dungeon.MAX_VERTICAL - 20) ? false : valid;
-			break;
-		case WEST:
-			valid = (origin.x < 20) ? false : valid;
-			break;
-		}
-
-		return valid;
 	}
 
 	/*
