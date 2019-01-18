@@ -38,27 +38,41 @@ public class Bend extends Passage {
 			advanced = true;
 
 			Orientation o = isRightTurn ? orient.clockwise() : orient.counterClockwise();
+			int l = Dungeon.WALL_LENGTH;
 
 			Point p = null;
-			switch (orient) {
-			case EAST:
-				p = new Point(origin.x + Dungeon.WALL_LENGTH, origin.y);
-				break;
-			case NORTH:
-				p = origin;
-				break;
-			case SOUTH:
-				p = new Point(origin.x, origin.y + Dungeon.WALL_LENGTH);
-				break;
-			case WEST:
-				p = origin;
-				break;
+			// p = new Point(origin.x - Dungeon.WALL_LENGTH, origin.y);
+
+			if (isRightTurn && orient.isNorth()) {
+				p = new Point(origin.x + l, origin.y);
+
+			} else if (orient.isNorth()) {
+				p = origin.clone();
+
+			} else if (isRightTurn && orient.isSouth()) {
+				p = origin.clone();
+
+			} else if (orient.isSouth()) {
+				p = new Point(origin.x + l, origin.y);
+
+			} else if (isRightTurn && orient.isEast()) {
+				p = new Point(origin.x, origin.y + l);
+
+			} else if (orient.isEast()) {
+				p = origin.clone();
+
+			} else if (isRightTurn && orient.isWest()) {
+				p = new Point(origin.x, origin.y);
+
+			} else if (orient.isWest()) {
+				p = new Point(origin.x, origin.y + l);
+
 			}
 
 			Passage pass = Segment.makePassage(dungeon, p, o, 10, 10);
 			if (pass.validPassage()) {
 				Dungeon.passages.add(pass);
-				System.out.printf("%s-facing bend turns %s\n", orient.toString(), o.toString());
+				System.out.printf("%s-facing passage turns %s\n", orient.toString(), o.toString());
 				System.out.printf("New passage continues %s\n", o.toString());
 			}
 
@@ -104,10 +118,10 @@ public class Bend extends Passage {
 			g.drawLine(left, top, right, top);
 		}
 
-		 if (Dungeon.showOrigins) {
-		 g.setColor(Color.green);
-		 g.fillOval((int) origin.x, (int) origin.y, 10, 10);
-		 }
+		if (Dungeon.showOrigins) {
+			g.setColor(Color.green);
+			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
+		}
 	}
 
 	/*

@@ -21,7 +21,8 @@ public class Dungeon extends JFrame {
 
 	public static final int WALL_LENGTH = 10;
 
-	public static boolean showOrigins = true;
+	public static boolean showOrigins = false;
+	public static int PASSAGE_CUTOFF = 500;
 
 	/*
 	 * 
@@ -43,28 +44,24 @@ public class Dungeon extends JFrame {
 	public Dungeon() {
 		super("Dungeon");
 
-		Orientation o = Orientation.NORTH;
+		Orientation o = Orientation.EAST;
 		// for (int i = 0; i < 4; ++i) {
 		// passages.add(Passage.makePassage(this, MIDPOINT, o));
 		// System.out.println(o.toString());
 		// o = o.clockwise();
 		// }
 
-		doors.add(Door.makeDoor(this, MIDPOINT, o));
+		// doors.add(Door.makeDoor(this, MIDPOINT, o));
 		// doors.get(0).advance();
 
-		// chambers.add(Chamber.makeChamber(this, MIDPOINT, Orientation.random()));
+		chambers.add(Chamber.makeChamber(this, MIDPOINT, Orientation.random()));
 
 		int length = doors.size();
 		for (int i = 0; i < length; ++i)
 			doors.get(i).advance();
 
 		advancePassages();
-
-		// length = passages.size();
-		// for (int i = 0; i < length; ++i)
-		// passages.get(i).advance();
-
+		// FIXME - for testing
 		System.out.println(passages.size());
 
 		/*
@@ -72,7 +69,7 @@ public class Dungeon extends JFrame {
 		 */
 		setResizable(false);
 		setSize(MAX_HORIZONTAL, MAX_VERTICAL);
-		setLocationRelativeTo(null);
+		// setLocationRelativeTo(null);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -83,11 +80,11 @@ public class Dungeon extends JFrame {
 	public void paint(Graphics g) {
 
 		g.setColor(Color.BLUE);
-		for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
-			g.drawLine(i, 0, i, MAX_VERTICAL);
-
-		for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
-			g.drawLine(0, i, MAX_HORIZONTAL, i);
+		// for (int i = WALL_LENGTH; i < MAX_HORIZONTAL; i += WALL_LENGTH)
+		// g.drawLine(i, 0, i, MAX_VERTICAL);
+		//
+		// for (int i = WALL_LENGTH; i < MAX_VERTICAL; i += WALL_LENGTH)
+		// g.drawLine(0, i, MAX_HORIZONTAL, i);
 
 		for (Chamber el : chambers)
 			el.paint(g);
@@ -107,11 +104,16 @@ public class Dungeon extends JFrame {
 
 		int length = passages.size();
 		do {
-			for (; index < length; ++index)
-				passages.get(index).advance();
+			for (; index < length; ++index) {
+				Passage p = passages.get(index);
+				if (p.isDeadEnd != true)
+					p.advance();
+				// else
+				// ((Chamber) p).checkForDoors();
+			}
 
 			length = passages.size();
-		} while (index < length);
+		} while (index < length && index < PASSAGE_CUTOFF);
 
 	}
 

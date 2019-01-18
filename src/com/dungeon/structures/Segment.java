@@ -102,8 +102,11 @@ public class Segment extends Passage {
 			case 2:
 				// FINISHED
 				pass = makePassage(dungeon, p, orient, 30, 10);
-				if (pass.validPassage())
+				pass.advanced = false;
+				if (pass.validPassage()) {
 					Dungeon.passages.add(pass);
+					System.out.println("Passage continues 30 feet.");
+				}
 				break;
 			case 3:
 			case 4:
@@ -116,8 +119,10 @@ public class Segment extends Passage {
 				// DEAD END
 				pass = makePassage(dungeon, p, orient, 20, 10);
 				pass.makeDeadEnd();
-				if (pass.validPassage())
+				if (pass.validPassage()) {
 					Dungeon.passages.add(pass);
+					System.out.println("20-foot passage is dead end.");
+				}
 				break;
 			case 11:
 			case 12:
@@ -143,6 +148,13 @@ public class Segment extends Passage {
 			case 18:
 			case 19:
 			case 20:
+				// FIXME - remove after testing
+				pass = makePassage(dungeon, p, orient, 30, 10);
+				pass.advanced = false;
+				if (pass.validPassage()) {
+					Dungeon.passages.add(pass);
+					System.out.println("Passage continues 30 feet.");
+				}
 				break;
 			}
 

@@ -115,11 +115,11 @@ public class Door extends Polygon {
 			}
 
 			// FIXME
-			System.out.printf("Opened door %s to passage.\n", orient.toString());
 			Passage pass = Segment.makePassage(dungeon, origin, orient, 30, 10);
-			if (pass.validPassage())
+			if (pass.validPassage()) {
 				Dungeon.passages.add(pass);
-
+				System.out.printf("Door opened %s to 30-foot passage.\n", orient.toString());
+			}
 
 		}
 	}
