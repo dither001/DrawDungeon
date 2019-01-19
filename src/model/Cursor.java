@@ -23,14 +23,14 @@ public class Cursor extends Polygon {
 	 */
 	@Override
 	public void paint(Graphics g) {
-		Point[] pts = getPoints();
-		int[] xpts = new int[pts.length];
-		int[] ypts = new int[pts.length];
-		int npts = pts.length;
+		//Point[] pts = getPoints();
+		int[] xpts = new int[shape.length];
+		int[] ypts = new int[shape.length];
+		int npts = shape.length;
 
 		for (int i = 0; i < npts; i++) {
-			xpts[i] = (int) pts[i].x;
-			ypts[i] = (int) pts[i].y;
+			xpts[i] = (int) shape[i].x;
+			ypts[i] = (int) shape[i].y;
 		}
 
 		g.setColor(Color.BLUE);

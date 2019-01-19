@@ -35,8 +35,8 @@ public class Dungeon extends JFrame {
 	public static List<Door> doors;
 
 	static {
+//		cursor = new Cursor(MIDPOINT);
 		cursor = new Cursor(MIDPOINT);
-
 		chambers = new ArrayList<Chamber>();
 		passages = new ArrayList<Passage>();
 		doors = new ArrayList<Door>();
@@ -67,9 +67,10 @@ public class Dungeon extends JFrame {
 		advancePassages();
 		// FIXME - for testing
 		System.out.println(passages.size());
+		System.out.println(MIDPOINT.toString());
 
 		cursor.setShape(chambers.get(0));
-		for (Point el : cursor.getPoints())
+		for (Point el : cursor.shape.clone())
 			System.out.println(el.toString());
 
 		/*
