@@ -5,14 +5,14 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.Dungeon;
+import model.Floor;
 
 public class Intersection extends Passage {
 
 	/*
 	 * CONSTRUCTORS
 	 */
-	private Intersection(Dungeon dungeon, Point p, Orientation orient, int width) {
+	private Intersection(Floor dungeon, Point p, Orientation orient, int width) {
 		this(p, width, width);
 
 		this.dungeon = dungeon;
@@ -57,7 +57,7 @@ public class Intersection extends Passage {
 
 			Orientation lo = orient.clockwise(), ro = orient.counterClockwise();
 			Point lp = null, rp = null;
-			int l = Dungeon.WALL_LENGTH;
+			int l = dungeon.WALL_LENGTH;
 
 			if (orient.isNorth()) {
 				rp = origin.clone();
@@ -78,11 +78,12 @@ public class Intersection extends Passage {
 			}
 
 			Passage lPass = Segment.makePassage(dungeon, lp, lo, 10, 10);
+			if (lPass.validPassage())
+				dungeon.passages.add(lPass);
+
 			Passage rPass = Segment.makePassage(dungeon, rp, ro, 10, 10);
-			if (lPass.validPassage() && rPass.validPassage()) {
-				Dungeon.passages.add(lPass);
-				Dungeon.passages.add(rPass);
-			}
+			if (rPass.validPassage())
+				dungeon.passages.add(rPass);
 
 		}
 	}
@@ -90,7 +91,7 @@ public class Intersection extends Passage {
 	/*
 	 * STATIC METHODS
 	 */
-	public static Intersection makeIntersection(Dungeon d, Point p, Orientation o, int width) {
+	public static Intersection makeIntersection(Floor d, Point p, Orientation o, int width) {
 		Point point = null;
 		switch (o) {
 		case EAST:

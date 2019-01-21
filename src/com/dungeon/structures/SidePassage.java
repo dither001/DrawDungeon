@@ -5,7 +5,8 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.Dungeon;
+import model.Floor;
+import view.Default;
 
 public class SidePassage extends Passage {
 	public boolean isRightTurn;
@@ -13,7 +14,7 @@ public class SidePassage extends Passage {
 	/*
 	 * CONSTRUCTORS
 	 */
-	private SidePassage(Dungeon dungeon, Point origin, Orientation orient, boolean isRightTurn, int length,
+	private SidePassage(Floor dungeon, Point origin, Orientation orient, boolean isRightTurn, int length,
 			int height) {
 		this(origin, length, height);
 
@@ -39,7 +40,7 @@ public class SidePassage extends Passage {
 
 			Orientation o = isRightTurn ? orient.clockwise() : orient.counterClockwise();
 			Point forP = nextPoint(), sideP = null;
-			int l = Dungeon.WALL_LENGTH;
+			int l = Floor.WALL_LENGTH;
 
 			switch (orient) {
 			case EAST:
@@ -58,11 +59,11 @@ public class SidePassage extends Passage {
 
 			Passage pass = Segment.makePassage(dungeon, forP, orient, 10, 10);
 			if (pass.validPassage())
-				Dungeon.passages.add(pass);
+				dungeon.passages.add(pass);
 
 			pass = Segment.makePassage(dungeon, sideP, o, 10, 10);
 			if (pass.validPassage())
-				Dungeon.passages.add(pass);
+				dungeon.passages.add(pass);
 		}
 	}
 
@@ -117,7 +118,7 @@ public class SidePassage extends Passage {
 		else if (orient.isWest())
 			g.drawLine(left, top, right, top);
 
-		if (Dungeon.showOrigins) {
+		if (Default.showOrigins) {
 			g.setColor(Color.green);
 			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
 		}
@@ -126,7 +127,7 @@ public class SidePassage extends Passage {
 	/*
 	 * STATIC METHODS
 	 */
-	public static SidePassage makeSidePassage(Dungeon d, Point p, Orientation o, boolean isRightTurn, int width) {
+	public static SidePassage makeSidePassage(Floor d, Point p, Orientation o, boolean isRightTurn, int width) {
 		Point point = null;
 		switch (o) {
 		case EAST:

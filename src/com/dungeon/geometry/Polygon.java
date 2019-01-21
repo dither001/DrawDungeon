@@ -1,8 +1,14 @@
 package com.dungeon.geometry;
 
+import com.dungeon.structures.*;
+
+import model.Floor;
+import view.Default;
+
 public abstract class Polygon implements Shape {
 	public Point[] shape;
 	public Point origin;
+	public Orientation orient;
 
 	public int length;
 	public int height;

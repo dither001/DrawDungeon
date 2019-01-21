@@ -6,11 +6,10 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.*;
 
-import model.Dungeon;
+import model.Floor;
 
 public class Door extends Polygon {
-	private Dungeon dungeon;
-	public Orientation orient;
+	private Floor dungeon;
 
 	public boolean isSecret;
 	public boolean advanced;
@@ -18,7 +17,7 @@ public class Door extends Polygon {
 	/*
 	 * CONSTRUCTORS
 	 */
-	private Door(Dungeon dungeon, Point origin, Orientation orient) {
+	private Door(Floor dungeon, Point origin, Orientation orient) {
 		this(origin, Orientation.isNorthOrSouth(orient) ? 8 : 4, Orientation.isNorthOrSouth(orient) ? 4 : 8);
 		this.dungeon = dungeon;
 		this.orient = orient;
@@ -73,23 +72,8 @@ public class Door extends Polygon {
 		if (advanced != true) {
 			advanced = true;
 
-			// Point p = null;
-			// switch (orient) {
-			// case EAST:
-			// p = origin.clone();
-			// break;
-			// case NORTH:
-			// p = origin.clone();
-			// break;
-			// case SOUTH:
-			// p = origin.clone();
-			// break;
-			// case WEST:
-			// p = origin.clone();
-			// break;
-			// }
-
-			Passage pass = null;
+			Chamber c = null;
+			Passage pass = null, tsec = null;
 			int dice = Dice.roll(10);
 
 			switch (dice) {
@@ -97,12 +81,15 @@ public class Door extends Polygon {
 			case 2:
 				// FINISHED: t-intersection
 				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
-				Passage t = Intersection.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
-				if (pass.validPassage() && t.validPassage()) {
+				if (pass.validPassage()) {
 					pass.advanced = true;
-					Dungeon.passages.add(pass);
-					Dungeon.passages.add(t);
-					System.out.printf("Door opened %s to t-intersection.\n", orient.toString());
+					dungeon.passages.add(pass);
+
+					tsec = Intersection.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
+					if (tsec.validPassage())
+						dungeon.passages.add(tsec);
+
+					// System.out.printf("Door opened %s to t-intersection.\n", orient.toString());
 				}
 				break;
 			case 3:
@@ -114,8 +101,8 @@ public class Door extends Polygon {
 				// FINISHED: 20-ft straight passage
 				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
-					System.out.printf("Opened door %s to passage.\n", orient.toString());
+					dungeon.passages.add(pass);
+					// System.out.printf("Opened door %s to passage.\n", orient.toString());
 				}
 				break;
 			case 9:
@@ -129,16 +116,20 @@ public class Door extends Polygon {
 			case 17:
 			case 18:
 				// TODO - chambers
-				// System.out.printf("Opened door to chamber.\n", orient.toString());
-				// Dungeon.chambers.add(Chamber.makeChamber(dungeon, origin, orient));
+				c = Chamber.makeChamber(dungeon, origin, orient);
+				if (c.validChamber()) {
+					dungeon.chambers.add(c);
+					c.checkForDoors();
+					// System.out.printf("Opened door to chamber.\n", orient.toString());
+				}
 				break;
 			case 19:
 				// TODO - stairs
-				// System.out.printf("Opened door %s to stairs.\n", orient.toString());
+				System.out.printf("Opened door %s to stairs.\n", orient.toString());
 				break;
 			case 20:
 				// TODO - false door w/trap
-				// System.out.printf("False %s door.\n", orient.toString());
+				System.out.printf("False %s door.\n", orient.toString());
 				break;
 			}
 
@@ -151,7 +142,7 @@ public class Door extends Polygon {
 	public static Door makeLeftSideDoor(Passage passage) {
 		Point p = passage.nextPoint();
 		Orientation o = passage.orient.counterClockwise();
-		int l = Dungeon.WALL_LENGTH;
+		int l = passage.dungeon.WALL_LENGTH;
 
 		switch (passage.orient) {
 		case EAST:
@@ -174,7 +165,7 @@ public class Door extends Polygon {
 	public static Door makeRightSideDoor(Passage passage) {
 		Point p = passage.nextPoint();
 		Orientation o = passage.orient.counterClockwise();
-		int l = Dungeon.WALL_LENGTH;
+		int l = passage.dungeon.WALL_LENGTH;
 
 		switch (passage.orient) {
 		case EAST:
@@ -194,7 +185,7 @@ public class Door extends Polygon {
 		return makeDoor(passage.dungeon, p, o);
 	}
 
-	public static Door makeDoor(Dungeon dungeon, Point origin, Orientation orient) {
+	public static Door makeDoor(Floor dungeon, Point origin, Orientation orient) {
 		return new Door(dungeon, origin, orient);
 	}
 

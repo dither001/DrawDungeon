@@ -6,13 +6,13 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.Dice;
 
-import model.Dungeon;
+import model.Floor;
 
 public class Segment extends Passage {
 	/*
 	 * CONSTRUCTORS
 	 */
-	private Segment(Dungeon dungeon, Point origin, Orientation orient, int length, int height) {
+	private Segment(Floor dungeon, Point origin, Orientation orient, int length, int height) {
 		this(origin, length, height);
 
 		this.dungeon = dungeon;
@@ -64,11 +64,6 @@ public class Segment extends Passage {
 				break;
 			}
 		}
-
-		if (Dungeon.showOrigins) {
-			g.setColor(Color.green);
-			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
-		}
 	}
 
 	@Override
@@ -76,7 +71,7 @@ public class Segment extends Passage {
 		if (advanced != true) {
 			advanced = true;
 
-			int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
+//			int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
 			int w = (Orientation.isNorthOrSouth(orient)) ? length : height;
 
 			Passage pass = null, side = null;
@@ -91,8 +86,8 @@ public class Segment extends Passage {
 				pass = makePassage(dungeon, p, orient, 30, 10);
 				pass.advanced = false;
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
-					System.out.println("Passage continues 30 feet.");
+					dungeon.passages.add(pass);
+					// System.out.println("Passage continues 30 feet.");
 				}
 				break;
 			case 3:
@@ -100,10 +95,10 @@ public class Segment extends Passage {
 				pass = makePassage(dungeon, p, orient, 40, 10);
 				pass.advanced = false;
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
+					dungeon.passages.add(pass);
 					door = Door.makeLeftSideDoor(pass);
-					Dungeon.doors.add(door);
-					System.out.printf("Door on the %s wall.\n", door.orient.toString());
+					dungeon.doors.add(door);
+					// System.out.printf("Door on the %s wall.\n", door.orient.toString());
 				}
 				break;
 			case 4:
@@ -111,10 +106,10 @@ public class Segment extends Passage {
 				pass = makePassage(dungeon, p, orient, 40, 10);
 				pass.advanced = false;
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
+					dungeon.passages.add(pass);
 					door = Door.makeRightSideDoor(pass);
-					Dungeon.doors.add(door);
-					System.out.printf("Door on the %s wall.\n", door.orient.toString());
+					dungeon.doors.add(door);
+					// System.out.printf("Door on the %s wall.\n", door.orient.toString());
 				}
 				break;
 			case 5:
@@ -122,9 +117,9 @@ public class Segment extends Passage {
 				pass = makePassage(dungeon, p, orient, 20, 10);
 				pass.makeDeadEnd();
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
-					System.out.printf("%s-facing passage ends at a door.\n", orient.toString());
-					Dungeon.doors.add(Door.makeDoor(dungeon, pass.nextPoint(), orient));
+					dungeon.passages.add(pass);
+					dungeon.doors.add(Door.makeDoor(dungeon, pass.nextPoint(), orient));
+					// System.out.printf("%s-facing passage ends at a door.\n", orient.toString());
 				}
 				break;
 			case 6:
@@ -133,11 +128,12 @@ public class Segment extends Passage {
 				pass = makePassage(dungeon, p, orient, 20, 10);
 				side = SidePassage.makeSidePassage(dungeon, pass.nextPoint(), orient, true, 10);
 				if (pass.validPassage() && side.validPassage()) {
-					Dungeon.passages.add(pass);
+					dungeon.passages.add(pass);
 					pass.advanced = true;
-					Dungeon.passages.add(side);
+					dungeon.passages.add(side);
 					side.advance();
-					System.out.printf("Side passage on %s wall.\n", side.orient.clockwise().toString());
+					// System.out.printf("Side passage on %s wall.\n",
+					// side.orient.clockwise().toString());
 				}
 				break;
 			case 8:
@@ -147,8 +143,8 @@ public class Segment extends Passage {
 				pass = makePassage(dungeon, p, orient, 20, 10);
 				pass.makeDeadEnd();
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
-					System.out.println("20-foot passage is dead end.");
+					dungeon.passages.add(pass);
+					// System.out.println("20-foot passage is dead end.");
 				}
 				break;
 			case 11:
@@ -156,7 +152,7 @@ public class Segment extends Passage {
 				// LEFT TURN
 				pass = Bend.makeBend(dungeon, p, orient, false, w);
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
+					dungeon.passages.add(pass);
 					pass.advance();
 				}
 				break;
@@ -165,7 +161,7 @@ public class Segment extends Passage {
 				// RIGHT TURN
 				pass = Bend.makeBend(dungeon, p, orient, true, w);
 				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
+					dungeon.passages.add(pass);
 					pass.advance();
 				}
 				break;
@@ -174,14 +170,20 @@ public class Segment extends Passage {
 			case 17:
 			case 18:
 			case 19:
-			case 20:
-				// FIXME - remove after testing
-				pass = makePassage(dungeon, p, orient, 30, 10);
-				pass.advanced = false;
-				if (pass.validPassage()) {
-					Dungeon.passages.add(pass);
-					System.out.println("Passage continues 30 feet.");
+				// TODO - CHAMBERS 15-19
+				Chamber c = Chamber.makeChamber(dungeon, nextPoint(), orient);
+				if (c.validChamber()) {
+					dungeon.chambers.add(c);
+					c.checkForDoors();
+					// System.out.printf("Passage opens to chamber.\n", orient.toString());
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(c));
 				}
+				break;
+			case 20:
+				// TODO - stairs
+				System.out.println("Passage leads to stairs.");
 				break;
 			}
 
@@ -214,15 +216,15 @@ public class Segment extends Passage {
 	/*
 	 * STATIC METHODS
 	 */
-	public static Segment makePassage(Dungeon d, Point o1, Orientation o2) {
+	public static Segment makePassage(Floor d, Point p, Orientation o) {
 		// TODO - random passage
-		return makePassage(d, o1.clone(), o2, 30, 10);
+		return makePassage(d, p.clone(), o, 30, 10);
 	}
 
-	public static Segment makePassage(Dungeon d, Point o1, Orientation o2, int length, int width) {
+	public static Segment makePassage(Floor d, Point p, Orientation o, int length, int width) {
 		int l, h;
 
-		if (Orientation.isNorthOrSouth(o2)) {
+		if (Orientation.isNorthOrSouth(o)) {
 			l = width;
 			h = length;
 		} else {
@@ -230,22 +232,22 @@ public class Segment extends Passage {
 			h = width;
 		}
 
-		Point p = null;
-		switch (o2) {
+		Point point = null;
+		switch (o) {
 		case EAST:
-			p = new Point(o1.x, o1.y);
+			point = new Point(p.x, p.y);
 			break;
 		case NORTH:
-			p = new Point(o1.x, o1.y - length);
+			point = new Point(p.x, p.y - length);
 			break;
 		case SOUTH:
-			p = o1.clone();
+			point = p.clone();
 			break;
 		case WEST:
-			p = new Point(o1.x - length, o1.y);
+			point = new Point(p.x - length, p.y);
 			break;
 		}
 
-		return new Segment(d, p, o2, l, h);
+		return new Segment(d, point, o, l, h);
 	}
 }

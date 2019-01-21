@@ -6,20 +6,23 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.Dice;
 
-import model.Dungeon;
+import model.Floor;
+import view.Default;
 
 public class Chamber extends Polygon {
-	public Dungeon dungeon;
+	public Floor dungeon;
 	private boolean isLargeRoom;
 	private boolean[] edges;
 
 	/*
 	 * CONSTRUCTORS
 	 */
-	public Chamber(Dungeon dungeon, Point origin, Orientation orient, int length, int height) {
+	private Chamber(Floor dungeon, Point origin, Orientation orient, int length, int height) {
 		this(origin, length, height);
 
 		this.dungeon = dungeon;
+		this.orient = orient;
+
 		this.isLargeRoom = (length * height > 1500) ? true : false;
 		this.edges = new boolean[numberOfSegments()];
 
@@ -29,12 +32,6 @@ public class Chamber extends Polygon {
 		}
 
 		initializeDoors();
-		checkForDoors();
-
-		System.out.println(orient.toString());
-		System.out.println(isLargeRoom);
-		System.out.println(edges.length);
-		System.out.println(doors);
 	}
 
 	public Chamber(Point origin, int length, int height) {
@@ -51,11 +48,6 @@ public class Chamber extends Polygon {
 
 		g.setColor(Color.BLACK);
 		g.drawRect((int) origin.x, (int) origin.y, length, height);
-
-		if (Dungeon.showOrigins) {
-			g.setColor(Color.green);
-			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
-		}
 	}
 
 	public boolean isLargeRoom() {
@@ -71,7 +63,7 @@ public class Chamber extends Polygon {
 	}
 
 	public int numberOfSegments() {
-		return perimeter() / Dungeon.WALL_LENGTH;
+		return perimeter() / dungeon.WALL_LENGTH;
 	}
 
 	private void initializeDoors() {
@@ -80,8 +72,13 @@ public class Chamber extends Polygon {
 	}
 
 	public void checkForDoors() {
-		int l = length / Dungeon.WALL_LENGTH;
-		int h = height / Dungeon.WALL_LENGTH;
+		checkForDoors(9);
+	}
+
+	public void checkForDoors(int doors) {
+		int waLength = dungeon.WALL_LENGTH;
+		int l = length / waLength;
+		int h = height / waLength;
 
 		double x = origin.x, y = origin.y;
 
@@ -90,34 +87,34 @@ public class Chamber extends Polygon {
 		Orientation orient = Orientation.NORTH;
 		for (int i = 0; i < edges.length; ++i) {
 			// roll for door
-			if (edges[i] != true && Dice.roll(10) > 5)
+			if (edges[i] != true && Dice.roll(10) > doors)
 				edges[i] = true;
 
 			// make door
 			if (edges[i] && i == 0)
-				Dungeon.doors.add(Door.makeDoor(dungeon, origin.clone(), orient));
+				dungeon.doors.add(Door.makeDoor(dungeon, origin.clone(), orient));
 			else if (edges[i])
-				Dungeon.doors.add(Door.makeDoor(dungeon, new Point(x, y), orient));
+				dungeon.doors.add(Door.makeDoor(dungeon, new Point(x, y), orient));
 
 			// adjust position after second corner
 			if (i + 1 == l + h) {
-				x -= Dungeon.WALL_LENGTH;
+				x -= waLength;
 			}
 
 			// adjust position after third corner
 			if (i + 1 == 2 * l + h) {
-				x += Dungeon.WALL_LENGTH;
-				y -= Dungeon.WALL_LENGTH;
+				x += waLength;
+				y -= waLength;
 			}
 
 			if (i + counter < l) {
-				x += Dungeon.WALL_LENGTH;
+				x += waLength;
 			} else if (i + counter < l + h) {
-				y += Dungeon.WALL_LENGTH;
+				y += waLength;
 			} else if (i < l + h + l) {
-				x -= Dungeon.WALL_LENGTH;
+				x -= waLength;
 			} else {
-				y -= Dungeon.WALL_LENGTH;
+				y -= waLength;
 			}
 
 			if (corner) {
@@ -131,15 +128,62 @@ public class Chamber extends Polygon {
 				corner = true;
 			}
 		}
+	}
 
+	public boolean validChamber() {
+		boolean valid = true;
+		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
+
+		switch (orient) {
+		case EAST:
+			valid = (origin.x + l > Default.MAX_HORIZONTAL - 20) ? false : valid;
+			break;
+		case NORTH:
+			valid = (origin.y < 40) ? false : valid;
+			break;
+		case SOUTH:
+			valid = (origin.y + l > Default.MAX_VERTICAL - 20) ? false : valid;
+			break;
+		case WEST:
+			valid = (origin.x < 20) ? false : valid;
+			break;
+		}
+
+		Default.cursor.setShape(this);
+
+		if (valid) {
+			for (Passage el : dungeon.passages) {
+				if (el.collision(Default.cursor)) {
+					valid = false;
+					break;
+				}
+			}
+		}
+
+		if (valid) {
+			for (Chamber el : dungeon.chambers) {
+				if (el.collision(Default.cursor)) {
+					valid = false;
+					break;
+				}
+			}
+		}
+
+		/*
+		 * TODO - TESTING
+		 */
+		if (valid != true)
+			System.out.println("Invalid placement");
+
+		return valid;
 	}
 
 	/*
 	 * STATIC METHODS
 	 */
-	public static Chamber makeChamber(Dungeon dungeon, Point origin, Orientation orient) {
-		int dice = Dice.roll(20);
+	public static Chamber makeChamber(Floor d, Point p, Orientation o) {
 		int length = 10, height = 10;
+		int dice = Dice.roll(20);
 
 		switch (dice) {
 		case 1:
@@ -200,8 +244,37 @@ public class Chamber extends Polygon {
 			break;
 		}
 
-		return new Chamber(dungeon, origin.clone(), orient, (Orientation.isNorthOrSouth(orient)) ? length : height,
-				(Orientation.isNorthOrSouth(orient)) ? height : length);
+		return makeChamber(d, p.clone(), o, length, height);
+	}
+
+	public static Chamber makeChamber(Floor dungeon, Point p, Orientation o, int length, int width) {
+		int l, h;
+
+		if (Orientation.isNorthOrSouth(o)) {
+			l = width;
+			h = length;
+		} else {
+			l = length;
+			h = width;
+		}
+
+		Point point = null;
+		switch (o) {
+		case EAST:
+			point = new Point(p.x, p.y);
+			break;
+		case NORTH:
+			point = new Point(p.x, p.y - length);
+			break;
+		case SOUTH:
+			point = p.clone();
+			break;
+		case WEST:
+			point = new Point(p.x - length, p.y);
+			break;
+		}
+
+		return new Chamber(dungeon, point, o, l, h);
 	}
 
 }

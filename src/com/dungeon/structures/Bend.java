@@ -5,7 +5,8 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.Dungeon;
+import model.Floor;
+import view.Default;
 
 public class Bend extends Passage {
 	public boolean isRightTurn;
@@ -13,7 +14,7 @@ public class Bend extends Passage {
 	/*
 	 * CONSTRUCTORS
 	 */
-	private Bend(Dungeon dungeon, Point p, Orientation orient, boolean isRightTurn, int width) {
+	private Bend(Floor dungeon, Point p, Orientation orient, boolean isRightTurn, int width) {
 		this(p, width, width);
 
 		this.dungeon = dungeon;
@@ -38,7 +39,7 @@ public class Bend extends Passage {
 			advanced = true;
 
 			Orientation o = isRightTurn ? orient.clockwise() : orient.counterClockwise();
-			int l = Dungeon.WALL_LENGTH;
+			int l = Floor.WALL_LENGTH;
 
 			Point p = null;
 
@@ -70,7 +71,7 @@ public class Bend extends Passage {
 
 			Passage pass = Segment.makePassage(dungeon, p, o, 10, 10);
 			if (pass.validPassage()) {
-				Dungeon.passages.add(pass);
+				dungeon.passages.add(pass);
 				System.out.printf("%s-facing passage turns %s\n", orient.toString(), o.toString());
 				System.out.printf("New passage continues %s\n", o.toString());
 			}
@@ -117,7 +118,7 @@ public class Bend extends Passage {
 			g.drawLine(left, top, right, top);
 		}
 
-		if (Dungeon.showOrigins) {
+		if (Default.showOrigins) {
 			g.setColor(Color.green);
 			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
 		}
@@ -126,7 +127,7 @@ public class Bend extends Passage {
 	@Override
 	public Point nextPoint() {
 		Point point = null;
-		int l = Dungeon.WALL_LENGTH;
+		int l = Floor.WALL_LENGTH;
 
 		if (isRightTurn && orient.isNorth()) {
 			point = new Point(origin.x + l, origin.y);
@@ -160,7 +161,7 @@ public class Bend extends Passage {
 	/*
 	 * STATIC METHODS
 	 */
-	public static Bend makeBend(Dungeon d, Point p, Orientation o, boolean isRightTurn, int width) {
+	public static Bend makeBend(Floor d, Point p, Orientation o, boolean isRightTurn, int width) {
 		Point point = null;
 		switch (o) {
 		case EAST:

@@ -23,7 +23,6 @@ public class Cursor extends Polygon {
 	 */
 	@Override
 	public void paint(Graphics g) {
-		//Point[] pts = getPoints();
 		int[] xpts = new int[shape.length];
 		int[] ypts = new int[shape.length];
 		int npts = shape.length;
@@ -41,11 +40,12 @@ public class Cursor extends Polygon {
 	public void setShape(Polygon polygon) {
 		this.origin = polygon.origin;
 		int l = polygon.length, h = polygon.height;
+		int inset = 2;
 
-		Point tl = new Point(origin.x, origin.y);
-		Point tr = new Point(origin.x + l, origin.y);
-		Point br = new Point(origin.x + l, origin.y + h);
-		Point bl = new Point(origin.x, origin.y + h);
+		Point tl = new Point(origin.x + inset, origin.y + inset);
+		Point tr = new Point(origin.x + l - inset, origin.y + inset);
+		Point br = new Point(origin.x + l - inset, origin.y + h - inset);
+		Point bl = new Point(origin.x + inset, origin.y + h - inset);
 
 		this.shape = new Point[] { tl, tr, br, bl };
 	}
