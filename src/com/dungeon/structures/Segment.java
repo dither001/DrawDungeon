@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.Dice;
 
-import model.Floor;
-
 public class Segment extends Passage {
 	/*
 	 * CONSTRUCTORS
@@ -184,6 +182,11 @@ public class Segment extends Passage {
 			case 20:
 				// TODO - stairs
 				System.out.println("Passage leads to stairs.");
+				pass = Stairs.makeStairs(dungeon, nextPoint());
+				if (pass.validPassage()) {
+					dungeon.passages.add(pass);
+					pass.advance();
+				}
 				break;
 			}
 

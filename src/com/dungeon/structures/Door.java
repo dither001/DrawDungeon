@@ -6,13 +6,14 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.*;
 
-import model.Floor;
-
 public class Door extends Polygon {
 	private Floor dungeon;
 
+	public boolean falseDoor;
 	public boolean isSecret;
 	public boolean advanced;
+
+	public boolean failedToPlace;
 
 	/*
 	 * CONSTRUCTORS
@@ -22,7 +23,12 @@ public class Door extends Polygon {
 		this.dungeon = dungeon;
 		this.orient = orient;
 
+		this.falseDoor = false;
+		this.isSecret = false;
 		this.advanced = false;
+
+		//
+		this.failedToPlace = false;
 	}
 
 	public Door(Point origin, int length, int height) {
@@ -41,11 +47,13 @@ public class Door extends Polygon {
 			top = (int) (origin.y + (height / 4) - 1);
 		}
 
-		if (advanced)
-			g.setColor(Color.GREEN);
+		if (failedToPlace)
+			g.setColor(Color.RED);
 		else
-			g.setColor(Color.WHITE);
+			g.setColor(Color.GREEN);
 
+		if (falseDoor)
+			g.setColor(Color.BLUE);
 		g.fillRect(left, top, length, height);
 
 		g.setColor(Color.BLACK);
@@ -94,6 +102,10 @@ public class Door extends Polygon {
 						dungeon.passages.add(tsec);
 
 					// System.out.printf("Door opened %s to t-intersection.\n", orient.toString());
+				} else {
+					// FIXME - testing
+					failedToPlace = true;
+					System.out.println("Failed to place t-intersection.");
 				}
 				break;
 			case 3:
@@ -107,6 +119,10 @@ public class Door extends Polygon {
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
 					// System.out.printf("Opened door %s to passage.\n", orient.toString());
+				} else {
+					// FIXME - testing
+					failedToPlace = true;
+					System.out.println("Failed to place 20-ft. passage.");
 				}
 				break;
 			case 9:
@@ -125,15 +141,28 @@ public class Door extends Polygon {
 					dungeon.chambers.add(c);
 					c.checkForDoors();
 					// System.out.printf("Opened door to chamber.\n", orient.toString());
+				} else {
+					// FIXME - testing
+					failedToPlace = true;
+					System.out.println("Failed to place chamber.");
 				}
 				break;
 			case 19:
 				// TODO - stairs
 				System.out.printf("Opened door %s to stairs.\n", orient.toString());
+				pass = Stairs.makeStairs(dungeon, origin);
+				if (pass.validPassage()) {
+					dungeon.passages.add(pass);
+					pass.advance();
+				} else {
+					failedToPlace = true;
+					System.out.println("Failed to place stairs.");
+				}
 				break;
 			case 20:
 				// TODO - false door w/trap
 				System.out.printf("False %s door.\n", orient.toString());
+				falseDoor = true;
 				break;
 			}
 
