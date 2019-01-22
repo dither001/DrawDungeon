@@ -5,8 +5,6 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import view.Default;
-
 public class Bend extends Passage {
 	public boolean isRightTurn;
 

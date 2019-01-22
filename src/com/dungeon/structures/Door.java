@@ -97,7 +97,7 @@ public class Door extends Polygon {
 					pass.advanced = true;
 					dungeon.passages.add(pass);
 
-					tsec = Intersection.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
+					tsec = TeeBranch.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
 					if (tsec.validPassage())
 						dungeon.passages.add(tsec);
 

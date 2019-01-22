@@ -124,7 +124,7 @@ public class Segment extends Passage {
 			case 7:
 				// TODO: right side passage (testing)
 				pass = makePassage(dungeon, p, orient, 20, 10);
-				side = SidePassage.makeSidePassage(dungeon, pass.nextPoint(), orient, true, 10);
+				side = SideBranch.makeSidePassage(dungeon, pass.nextPoint(), orient, true, 10);
 				if (pass.validPassage() && side.validPassage()) {
 					dungeon.passages.add(pass);
 					pass.advanced = true;

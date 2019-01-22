@@ -13,7 +13,6 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import com.dungeon.geometry.*;
-import com.dungeon.structures.*;
 
 import view.Default;
 

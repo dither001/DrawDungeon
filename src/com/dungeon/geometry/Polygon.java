@@ -1,9 +1,5 @@
 package com.dungeon.geometry;
 
-import com.dungeon.structures.*;
-
-import view.Default;
-
 public abstract class Polygon implements Shape {
 	public Point[] shape;
 	public Point origin;
@@ -12,6 +8,9 @@ public abstract class Polygon implements Shape {
 	public int length;
 	public int height;
 
+	/*
+	 * CONSTRUCTORS
+	 */
 	public Polygon(Point origin, int length, int height) {
 		this.origin = origin;
 		this.length = length;
@@ -25,26 +24,13 @@ public abstract class Polygon implements Shape {
 		this.shape = new Point[] { tl, tr, br, bl };
 	}
 
-	// Uses ray-casting algorithm
-	public boolean contains(Point point) {
-		Point[] points = shape.clone();
-		double crossingNumber = 0;
-
-		for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
-			if ((((points[i].x < point.x) && (point.x <= points[j].x))
-					|| ((points[j].x < point.x) && (point.x <= points[i].x)))
-					&& (point.y > points[i].y
-							+ (points[j].y - points[i].y) / (points[j].x - points[i].x) * (point.x - points[i].x))) {
-				crossingNumber++;
-			}
-		}
-		return crossingNumber % 2 == 1;
-	}
-
+	/*
+	 * INSTANCE METHODS
+	 */
 	public boolean collision(Polygon other) {
 		boolean collision = false;
 
-		for (Point el : other.shape.clone()) {
+		for (Point el : other.shape) {
 			if (this.contains(el)) {
 				collision = true;
 				break;
@@ -54,16 +40,21 @@ public abstract class Polygon implements Shape {
 		return collision;
 	}
 
-	/*
-	 * PRIVATE METHODS
-	 */
-	private double findArea() {
-		double sum = 0;
+	// Uses ray-casting algorithm
+	public boolean contains(Point other) {
+		Point[] points = shape;
 
+		double crossingNumber = 0;
 		for (int i = 0, j = 1; i < shape.length; i++, j = (j + 1) % shape.length) {
-			sum += shape[i].x * shape[j].y - shape[j].x * shape[i].y;
+			if ((((points[i].x < other.x) && (other.x <= points[j].x))
+					|| ((points[j].x < other.x) && (other.x <= points[i].x)))
+					&& (other.y > points[i].y
+							+ (points[j].y - points[i].y) / (points[j].x - points[i].x) * (other.x - points[i].x))) {
+
+				crossingNumber++;
+			}
 		}
 
-		return Math.abs(sum / 2);
+		return crossingNumber % 2 == 1;
 	}
 }

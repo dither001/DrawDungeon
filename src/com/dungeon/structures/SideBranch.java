@@ -5,15 +5,13 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import view.Default;
-
-public class SidePassage extends Passage {
+public class SideBranch extends Passage {
 	public boolean isRightTurn;
 
 	/*
 	 * CONSTRUCTORS
 	 */
-	private SidePassage(Floor dungeon, Point origin, Orientation orient, boolean isRightTurn, int length,
+	private SideBranch(Floor dungeon, Point origin, Orientation orient, boolean isRightTurn, int length,
 			int height) {
 		this(origin, length, height);
 
@@ -25,7 +23,7 @@ public class SidePassage extends Passage {
 		this.advanced = false;
 	}
 
-	public SidePassage(Point origin, int length, int height) {
+	public SideBranch(Point origin, int length, int height) {
 		super(origin, length, height);
 	}
 
@@ -116,17 +114,12 @@ public class SidePassage extends Passage {
 			g.drawLine(left, bottom, right, bottom);
 		else if (orient.isWest())
 			g.drawLine(left, top, right, top);
-
-		if (Default.showOrigins) {
-			g.setColor(Color.green);
-			g.fillOval((int) origin.x, (int) origin.y, 10, 10);
-		}
 	}
 
 	/*
 	 * STATIC METHODS
 	 */
-	public static SidePassage makeSidePassage(Floor d, Point p, Orientation o, boolean isRightTurn, int width) {
+	public static SideBranch makeSidePassage(Floor d, Point p, Orientation o, boolean isRightTurn, int width) {
 		Point point = null;
 		switch (o) {
 		case EAST:
@@ -143,7 +136,7 @@ public class SidePassage extends Passage {
 			break;
 		}
 
-		return new SidePassage(d, point, o, isRightTurn, width, width);
+		return new SideBranch(d, point, o, isRightTurn, width, width);
 	}
 
 }

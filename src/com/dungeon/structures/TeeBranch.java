@@ -5,12 +5,12 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-public class Intersection extends Passage {
+public class TeeBranch extends Passage {
 
 	/*
 	 * CONSTRUCTORS
 	 */
-	private Intersection(Floor dungeon, Point p, Orientation orient, int width) {
+	private TeeBranch(Floor dungeon, Point p, Orientation orient, int width) {
 		this(p, width, width);
 
 		this.dungeon = dungeon;
@@ -20,7 +20,7 @@ public class Intersection extends Passage {
 		this.advanced = false;
 	}
 
-	public Intersection(Point origin, int length, int height) {
+	public TeeBranch(Point origin, int length, int height) {
 		super(origin, length, height);
 	}
 
@@ -89,7 +89,7 @@ public class Intersection extends Passage {
 	/*
 	 * STATIC METHODS
 	 */
-	public static Intersection makeIntersection(Floor d, Point p, Orientation o, int width) {
+	public static TeeBranch makeIntersection(Floor d, Point p, Orientation o, int width) {
 		Point point = null;
 		switch (o) {
 		case EAST:
@@ -106,6 +106,6 @@ public class Intersection extends Passage {
 			break;
 		}
 
-		return new Intersection(d, point, o, width);
+		return new TeeBranch(d, point, o, width);
 	}
 }

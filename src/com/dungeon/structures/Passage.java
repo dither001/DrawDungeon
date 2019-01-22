@@ -88,7 +88,7 @@ public abstract class Passage extends Polygon {
 		 * TODO - TESTING
 		 */
 		if (valid != true)
-			System.out.println("Invalid placement");
+			System.out.println("Invalid passage placement");
 
 		return valid;
 	}

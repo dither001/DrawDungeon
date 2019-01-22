@@ -172,7 +172,7 @@ public class Chamber extends Polygon {
 		 * TODO - TESTING
 		 */
 		if (valid != true)
-			System.out.println("Invalid placement");
+			System.out.println("Invalid chamber placement");
 
 		return valid;
 	}
