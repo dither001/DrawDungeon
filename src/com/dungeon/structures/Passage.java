@@ -2,7 +2,6 @@ package com.dungeon.structures;
 
 import com.dungeon.geometry.*;
 
-import model.Floor;
 import view.Default;
 
 public abstract class Passage extends Polygon {

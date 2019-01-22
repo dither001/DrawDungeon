@@ -5,8 +5,6 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.Floor;
-
 public class Intersection extends Passage {
 
 	/*

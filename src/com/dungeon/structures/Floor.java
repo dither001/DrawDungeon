@@ -1,4 +1,4 @@
-package model;
+package com.dungeon.structures;
 
 /*
  * BISMUTH ENGINE V.1
@@ -19,7 +19,7 @@ import view.Default;
 
 @SuppressWarnings("serial")
 public class Floor extends JFrame {
-	public static final int WALL_LENGTH = 10;
+	protected final int WALL_LENGTH = 10;
 	public static int PASSAGE_CUTOFF = 500;
 
 	/*
@@ -81,8 +81,8 @@ public class Floor extends JFrame {
 				g.drawLine(0, i, Default.MAX_HORIZONTAL, i);
 		}
 
-//		for (TestRoom el : testRooms)
-//			el.paint(g);
+		for (TestRoom el : testRooms)
+			el.paint(g);
 
 		for (Chamber el : chambers)
 			el.paint(g);

@@ -1,5 +1,7 @@
 package controller;
 
+import com.dungeon.structures.Floor;
+
 import model.*;
 
 public class Main {

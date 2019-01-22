@@ -5,7 +5,6 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.Floor;
 import view.Default;
 
 public class SidePassage extends Passage {
@@ -40,7 +39,7 @@ public class SidePassage extends Passage {
 
 			Orientation o = isRightTurn ? orient.clockwise() : orient.counterClockwise();
 			Point forP = nextPoint(), sideP = null;
-			int l = Floor.WALL_LENGTH;
+			int l = dungeon.WALL_LENGTH;
 
 			switch (orient) {
 			case EAST:

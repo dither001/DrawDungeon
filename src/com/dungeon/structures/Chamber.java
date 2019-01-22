@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import com.dungeon.geometry.*;
 import com.dungeon.misc.Dice;
 
-import model.Floor;
 import view.Default;
 
 public class Chamber extends Polygon {
