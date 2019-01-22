@@ -1,4 +1,4 @@
-package model;
+package com.dungeon.misc;
 
 import java.awt.Color;
 import java.awt.Graphics;

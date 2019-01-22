@@ -1,8 +1,7 @@
 package com.dungeon.structures;
 
 import com.dungeon.geometry.*;
-
-import view.Default;
+import com.dungeon.misc.Default;
 
 public abstract class Passage extends Polygon {
 	public Floor dungeon;
@@ -15,6 +14,8 @@ public abstract class Passage extends Polygon {
 	 */
 	public Passage(Point origin, int length, int height) {
 		super(origin, length, height);
+		this.isDeadEnd = false;
+		this.advanced = false;
 	}
 
 	/*
@@ -46,27 +47,10 @@ public abstract class Passage extends Polygon {
 	}
 
 	public boolean validPassage() {
-		boolean valid = true;
-		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
-
-		switch (orient) {
-		case EAST:
-			valid = (origin.x + l > Default.MAX_HORIZONTAL - 20) ? false : valid;
-			break;
-		case NORTH:
-			valid = (origin.y < 40) ? false : valid;
-			break;
-		case SOUTH:
-			valid = (origin.y + l > Default.MAX_VERTICAL - 20) ? false : valid;
-			break;
-		case WEST:
-			valid = (origin.x < 20) ? false : valid;
-			break;
-		}
-
-		Default.cursor.setShape(this);
+		boolean valid = Default.inBounds(this);
 
 		if (valid) {
+			Default.cursor.setShape(this);
 			for (Passage el : dungeon.passages) {
 				if (el.collision(Default.cursor)) {
 					valid = false;
@@ -76,6 +60,7 @@ public abstract class Passage extends Polygon {
 		}
 
 		if (valid) {
+			Default.cursor.setShape(this);
 			for (Chamber el : dungeon.chambers) {
 				if (el.collision(Default.cursor)) {
 					valid = false;
@@ -84,14 +69,7 @@ public abstract class Passage extends Polygon {
 			}
 		}
 
-		/*
-		 * TODO - TESTING
-		 */
-		if (valid != true)
-			System.out.println("Invalid passage placement");
-
 		return valid;
 	}
-
 
 }

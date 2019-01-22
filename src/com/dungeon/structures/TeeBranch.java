@@ -34,7 +34,7 @@ public class TeeBranch extends Passage {
 		int bottom = (int) origin.y + height;
 		int right = (int) origin.x + length;
 
-		g.setColor(Color.WHITE);
+		g.setColor(Color.MAGENTA);
 		g.fillRect((int) origin.x, (int) origin.y, length, height);
 
 		g.setColor(Color.BLACK);

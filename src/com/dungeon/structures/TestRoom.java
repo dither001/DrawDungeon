@@ -5,15 +5,17 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.*;
-
 public class TestRoom extends Polygon {
 	public Floor dungeon;
 
 	public TestRoom(Polygon polygon) {
 		this(polygon.origin, polygon.length, polygon.height);
 
-		this.dungeon = ((Chamber) polygon).dungeon;
+		if (polygon.getClass().equals(Chamber.class))
+			this.dungeon = ((Chamber) polygon).dungeon;
+		else if (polygon.getClass().equals(Passage.class))
+			this.dungeon = ((Passage) polygon).dungeon;
+
 		this.orient = polygon.orient;
 
 		int l = polygon.length, h = polygon.height;
@@ -29,7 +31,6 @@ public class TestRoom extends Polygon {
 
 	public TestRoom(Point origin, int length, int height) {
 		super(origin, length, height);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class TestRoom extends Polygon {
 			ypts[i] = (int) shape[i].y;
 		}
 
-//		g.setColor(new Color(255, 0, 0, 127));
+		// g.setColor(new Color(255, 0, 0, 127));
 		g.setColor(Color.RED);
 		g.drawPolygon(xpts, ypts, npts);
 		g.fillPolygon(xpts, ypts, npts);

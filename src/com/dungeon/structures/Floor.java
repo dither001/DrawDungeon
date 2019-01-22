@@ -6,6 +6,7 @@ package com.dungeon.structures;
  */
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import com.dungeon.geometry.*;
-
-import view.Default;
+import com.dungeon.misc.Default;
 
 @SuppressWarnings("serial")
 public class Floor extends JFrame {
@@ -61,7 +61,7 @@ public class Floor extends JFrame {
 		 */
 		setResizable(false);
 		setSize(Default.MAX_HORIZONTAL, Default.MAX_VERTICAL);
-		// setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
@@ -71,7 +71,7 @@ public class Floor extends JFrame {
 	 */
 	public void paint(Graphics g) {
 
-		g.setColor(Color.BLUE);
+		g.setColor(Color.CYAN);
 		if (Default.showGrid) {
 			for (int i = WALL_LENGTH; i < Default.MAX_HORIZONTAL; i += WALL_LENGTH)
 				g.drawLine(i, 0, i, Default.MAX_VERTICAL);
@@ -86,8 +86,19 @@ public class Floor extends JFrame {
 		for (Chamber el : chambers)
 			el.paint(g);
 
-		for (Passage el : passages)
+		for (Passage el : passages) {
 			el.paint(g);
+
+			if (Default.showPassageIndex) {
+				String s = String.format("%s", passages.indexOf(el));
+				Font f = new Font("SansSerif", 0, 9);
+
+				g.setColor(Color.BLACK);
+				g.setFont(f);
+				g.drawString(s, (int) el.origin.x+1, (int) el.origin.y+8);
+			}
+
+		}
 
 		for (Door el : doors)
 			el.paint(g);

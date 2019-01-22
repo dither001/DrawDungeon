@@ -100,8 +100,6 @@ public class Door extends Polygon {
 					tsec = TeeBranch.makeIntersection(dungeon, pass.nextPoint(), orient, 10);
 					if (tsec.validPassage())
 						dungeon.passages.add(tsec);
-
-					// System.out.printf("Door opened %s to t-intersection.\n", orient.toString());
 				} else {
 					// FIXME - testing
 					failedToPlace = true;
@@ -118,7 +116,6 @@ public class Door extends Polygon {
 				pass = Segment.makePassage(dungeon, origin, orient, 20, 10);
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
-					// System.out.printf("Opened door %s to passage.\n", orient.toString());
 				} else {
 					// FIXME - testing
 					failedToPlace = true;
@@ -140,16 +137,13 @@ public class Door extends Polygon {
 				if (c.validChamber()) {
 					dungeon.chambers.add(c);
 					c.checkForDoors();
-					// System.out.printf("Opened door to chamber.\n", orient.toString());
 				} else {
-					// FIXME - testing
 					failedToPlace = true;
 					System.out.println("Failed to place chamber.");
 				}
 				break;
 			case 19:
 				// TODO - stairs
-				System.out.printf("Opened door %s to stairs.\n", orient.toString());
 				pass = Stairs.makeStairs(dungeon, origin);
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);

@@ -5,8 +5,6 @@ import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
 
-import model.*;
-
 public class Stairs extends Passage {
 
 	public boolean goingUp;

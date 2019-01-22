@@ -1,5 +1,6 @@
 package com.dungeon.misc;
 
+import java.util.List;
 import java.util.Random;
 
 public class Dice {
@@ -34,5 +35,10 @@ public class Dice {
 		return choice;
 	}
 
+	public static <T> T randomFromList(List<T> list) {
+		T choice = list.get(Dice.roll(list.size()) - 1);
+
+		return choice;
+	}
 
 }

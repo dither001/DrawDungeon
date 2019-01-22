@@ -34,7 +34,7 @@ public class Segment extends Passage {
 		int bottom = (int) origin.y + height;
 		int right = (int) origin.x + length;
 
-		g.setColor(Color.WHITE);
+		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect((int) origin.x, (int) origin.y, length, height);
 
 		g.setColor(Color.BLACK);
@@ -69,7 +69,7 @@ public class Segment extends Passage {
 		if (advanced != true) {
 			advanced = true;
 
-//			int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
+			// int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
 			int w = (Orientation.isNorthOrSouth(orient)) ? length : height;
 
 			Passage pass = null, side = null;
@@ -82,67 +82,111 @@ public class Segment extends Passage {
 			case 2:
 				// FINISHED
 				pass = makePassage(dungeon, p, orient, 30, 10);
-				pass.advanced = false;
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
-					// System.out.println("Passage continues 30 feet.");
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place 30-ft. passage.\n");
 				}
 				break;
 			case 3:
 				// TODO: door on the left (testing)
 				pass = makePassage(dungeon, p, orient, 40, 10);
-				pass.advanced = false;
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
+
 					door = Door.makeLeftSideDoor(pass);
 					dungeon.doors.add(door);
-					// System.out.printf("Door on the %s wall.\n", door.orient.toString());
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place passage with door (on the left).\n");
 				}
 				break;
 			case 4:
 				// TODO: door on the right (testing)
 				pass = makePassage(dungeon, p, orient, 40, 10);
-				pass.advanced = false;
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
+
 					door = Door.makeRightSideDoor(pass);
 					dungeon.doors.add(door);
-					// System.out.printf("Door on the %s wall.\n", door.orient.toString());
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place passage with door (on the right).\n");
 				}
 				break;
 			case 5:
 				// FINISHED: 20-ft passage ends in door
 				pass = makePassage(dungeon, p, orient, 20, 10);
-				pass.makeDeadEnd();
 				if (pass.validPassage()) {
+					pass.makeDeadEnd();
 					dungeon.passages.add(pass);
 					dungeon.doors.add(Door.makeDoor(dungeon, pass.nextPoint(), orient));
-					// System.out.printf("%s-facing passage ends at a door.\n", orient.toString());
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place passage with door.\n");
 				}
 				break;
 			case 6:
 			case 7:
 				// TODO: right side passage (testing)
 				pass = makePassage(dungeon, p, orient, 20, 10);
-				side = SideBranch.makeSidePassage(dungeon, pass.nextPoint(), orient, true, 10);
-				if (pass.validPassage() && side.validPassage()) {
+				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
+
 					pass.advanced = true;
-					dungeon.passages.add(side);
-					side.advance();
-					// System.out.printf("Side passage on %s wall.\n",
-					// side.orient.clockwise().toString());
+					side = SideBranch.makeSidePassage(dungeon, pass.origin, orient, true, 10);
+					if (side.validPassage()) {
+						dungeon.passages.add(side);
+						side.advance();
+					} else {
+						// FIXME - testing
+						dungeon.testRooms.add(new TestRoom(side));
+						System.out.printf("Failed to place branching passage.\n");
+					}
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place right-branching passage.\n");
 				}
 				break;
 			case 8:
 			case 9:
+				// TODO: left side passage (testing)
+				pass = makePassage(dungeon, p, orient, 20, 10);
+				if (pass.validPassage()) {
+					dungeon.passages.add(pass);
+
+					pass.advanced = true;
+					side = SideBranch.makeSidePassage(dungeon, pass.origin, orient, false, 10);
+					if (side.validPassage()) {
+						dungeon.passages.add(side);
+						side.advance();
+					} else {
+						// FIXME - testing
+						dungeon.testRooms.add(new TestRoom(side));
+						System.out.printf("Failed to place side passage.\n");
+					}
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place left-branching passage.\n");
+				}
+				break;
 			case 10:
 				// DEAD END
 				pass = makePassage(dungeon, p, orient, 20, 10);
 				pass.makeDeadEnd();
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
-					// System.out.println("20-foot passage is dead end.");
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place dead end.\n");
 				}
 				break;
 			case 11:
@@ -152,6 +196,10 @@ public class Segment extends Passage {
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
 					pass.advance();
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place left turn.\n");
 				}
 				break;
 			case 13:
@@ -161,6 +209,10 @@ public class Segment extends Passage {
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
 					pass.advance();
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place right turn.\n");
 				}
 				break;
 			case 15:
@@ -173,10 +225,10 @@ public class Segment extends Passage {
 				if (c.validChamber()) {
 					dungeon.chambers.add(c);
 					c.checkForDoors();
-					// System.out.printf("Passage opens to chamber.\n", orient.toString());
 				} else {
 					// FIXME - testing
 					dungeon.testRooms.add(new TestRoom(c));
+					System.out.printf("Failed to place chamber.\n");
 				}
 				break;
 			case 20:
@@ -186,6 +238,10 @@ public class Segment extends Passage {
 				if (pass.validPassage()) {
 					dungeon.passages.add(pass);
 					pass.advance();
+				} else {
+					// FIXME - testing
+					dungeon.testRooms.add(new TestRoom(pass));
+					System.out.printf("Failed to place stairs.\n");
 				}
 				break;
 			}

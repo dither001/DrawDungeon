@@ -2,11 +2,11 @@ package com.dungeon.structures;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import com.dungeon.geometry.*;
+import com.dungeon.misc.Default;
 import com.dungeon.misc.Dice;
-
-import view.Default;
 
 public class Chamber extends Polygon {
 	public Floor dungeon;
@@ -130,27 +130,10 @@ public class Chamber extends Polygon {
 	}
 
 	public boolean validChamber() {
-		boolean valid = true;
-		int l = (Orientation.isNorthOrSouth(orient)) ? height : length;
-
-		switch (orient) {
-		case EAST:
-			valid = (origin.x + l > Default.MAX_HORIZONTAL - 20) ? false : valid;
-			break;
-		case NORTH:
-			valid = (origin.y < 40) ? false : valid;
-			break;
-		case SOUTH:
-			valid = (origin.y + l > Default.MAX_VERTICAL - 20) ? false : valid;
-			break;
-		case WEST:
-			valid = (origin.x < 20) ? false : valid;
-			break;
-		}
-
-		Default.cursor.setShape(this);
+		boolean valid = Default.inBounds(this);
 
 		if (valid) {
+			Default.cursor.setShape(this);
 			for (Passage el : dungeon.passages) {
 				if (el.collision(Default.cursor)) {
 					valid = false;
@@ -160,6 +143,7 @@ public class Chamber extends Polygon {
 		}
 
 		if (valid) {
+			Default.cursor.setShape(this);
 			for (Chamber el : dungeon.chambers) {
 				if (el.collision(Default.cursor)) {
 					valid = false;
@@ -167,12 +151,6 @@ public class Chamber extends Polygon {
 				}
 			}
 		}
-
-		/*
-		 * TODO - TESTING
-		 */
-		if (valid != true)
-			System.out.println("Invalid chamber placement");
 
 		return valid;
 	}
@@ -247,7 +225,8 @@ public class Chamber extends Polygon {
 	}
 
 	public static Chamber makeChamber(Floor dungeon, Point p, Orientation o, int length, int width) {
-		int l, h;
+		ArrayList<Chamber> list = new ArrayList<Chamber>();
+		int l, h, waLength = dungeon.WALL_LENGTH;
 
 		if (Orientation.isNorthOrSouth(o)) {
 			l = width;
@@ -257,23 +236,33 @@ public class Chamber extends Polygon {
 			h = width;
 		}
 
+		Chamber c = null;
 		Point point = null;
 		switch (o) {
 		case EAST:
 			point = new Point(p.x, p.y);
+			list.add(new Chamber(dungeon, point, o, l, h));
 			break;
 		case NORTH:
-			point = new Point(p.x, p.y - length);
+			list.add(new Chamber(dungeon, new Point(p.x, p.y - length), o, l, h));
+			for (int i = (int) p.x; i > (int) p.x - width; i -= waLength) {
+				point = new Point(i, p.y - length);
+				c = new Chamber(dungeon, point, o, l, h);
+				if (c.validChamber())
+					list.add(c);
+			}
 			break;
 		case SOUTH:
 			point = p.clone();
+			list.add(new Chamber(dungeon, point, o, l, h));
 			break;
 		case WEST:
 			point = new Point(p.x - length, p.y);
+			list.add(new Chamber(dungeon, point, o, l, h));
 			break;
 		}
 
-		return new Chamber(dungeon, point, o, l, h);
+		return Dice.randomFromList(list);
 	}
 
 }
