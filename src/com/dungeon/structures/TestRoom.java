@@ -43,7 +43,8 @@ public class TestRoom extends Polygon {
 			ypts[i] = (int) shape[i].y;
 		}
 
-		g.setColor(new Color(255, 0, 0, 127));
+//		g.setColor(new Color(255, 0, 0, 127));
+		g.setColor(Color.RED);
 		g.drawPolygon(xpts, ypts, npts);
 		g.fillPolygon(xpts, ypts, npts);
 	}

@@ -41,7 +41,11 @@ public class Door extends Polygon {
 			top = (int) (origin.y + (height / 4) - 1);
 		}
 
-		g.setColor(Color.WHITE);
+		if (advanced)
+			g.setColor(Color.GREEN);
+		else
+			g.setColor(Color.WHITE);
+
 		g.fillRect(left, top, length, height);
 
 		g.setColor(Color.BLACK);

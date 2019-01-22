@@ -81,6 +81,9 @@ public class Floor extends JFrame {
 				g.drawLine(0, i, Default.MAX_HORIZONTAL, i);
 		}
 
+//		for (TestRoom el : testRooms)
+//			el.paint(g);
+
 		for (Chamber el : chambers)
 			el.paint(g);
 
@@ -88,9 +91,6 @@ public class Floor extends JFrame {
 			el.paint(g);
 
 		for (Door el : doors)
-			el.paint(g);
-
-		for (TestRoom el : testRooms)
 			el.paint(g);
 
 		g.setColor(Color.RED);
