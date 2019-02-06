@@ -43,29 +43,24 @@ public abstract class Passage extends Polygon {
 	}
 
 	public int numberOfSegments() {
-		return perimeter() / dungeon.WALL_LENGTH;
+		return perimeter() / Default.WALL_LENGTH;
 	}
 
 	public boolean validPassage() {
 		boolean valid = Default.inBounds(this);
+		Default.cursor.setShape(this);
 
-		if (valid) {
-			Default.cursor.setShape(this);
-			for (Passage el : dungeon.passages) {
-				if (el.collision(Default.cursor)) {
-					valid = false;
-					break;
-				}
+		for (Passage el : dungeon.passages) {
+			if (el.collision(Default.cursor)) {
+				valid = false;
+				break;
 			}
 		}
 
-		if (valid) {
-			Default.cursor.setShape(this);
-			for (Chamber el : dungeon.chambers) {
-				if (el.collision(Default.cursor)) {
-					valid = false;
-					break;
-				}
+		for (Chamber el : dungeon.chambers) {
+			if (el.collision(Default.cursor)) {
+				valid = false;
+				break;
 			}
 		}
 

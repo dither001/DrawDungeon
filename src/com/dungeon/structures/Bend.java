@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
+import com.dungeon.misc.*;
 
 public class Bend extends Passage {
 	public boolean isRightTurn;
@@ -36,7 +37,7 @@ public class Bend extends Passage {
 			advanced = true;
 
 			Orientation o = isRightTurn ? orient.clockwise() : orient.counterClockwise();
-			int l = dungeon.WALL_LENGTH;
+			int l = Default.WALL_LENGTH;
 
 			Point p = null;
 
@@ -120,7 +121,7 @@ public class Bend extends Passage {
 	@Override
 	public Point nextPoint() {
 		Point point = null;
-		int l = dungeon.WALL_LENGTH;
+		int l = Default.WALL_LENGTH;
 
 		if (isRightTurn && orient.isNorth()) {
 			point = new Point(origin.x + l, origin.y);

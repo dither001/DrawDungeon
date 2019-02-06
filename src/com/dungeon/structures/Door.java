@@ -169,7 +169,7 @@ public class Door extends Polygon {
 	public static Door makeLeftSideDoor(Passage passage) {
 		Point p = passage.nextPoint();
 		Orientation o = passage.orient.counterClockwise();
-		int l = passage.dungeon.WALL_LENGTH;
+		int l = Default.WALL_LENGTH;
 
 		switch (passage.orient) {
 		case EAST:
@@ -192,7 +192,7 @@ public class Door extends Polygon {
 	public static Door makeRightSideDoor(Passage passage) {
 		Point p = passage.nextPoint();
 		Orientation o = passage.orient.counterClockwise();
-		int l = passage.dungeon.WALL_LENGTH;
+		int l = Default.WALL_LENGTH;
 
 		switch (passage.orient) {
 		case EAST:

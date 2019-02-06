@@ -18,7 +18,6 @@ import com.dungeon.misc.Default;
 
 @SuppressWarnings("serial")
 public class Floor extends JFrame {
-	protected final int WALL_LENGTH = 10;
 	public static int PASSAGE_CUTOFF = 500;
 
 	/*
@@ -70,18 +69,19 @@ public class Floor extends JFrame {
 	 * INSTANCE METHODS
 	 */
 	public void paint(Graphics g) {
+		int waLength = Default.WALL_LENGTH;
 
 		g.setColor(Color.CYAN);
 		if (Default.showGrid) {
-			for (int i = WALL_LENGTH; i < Default.MAX_HORIZONTAL; i += WALL_LENGTH)
+			for (int i = waLength; i < Default.MAX_HORIZONTAL; i += waLength)
 				g.drawLine(i, 0, i, Default.MAX_VERTICAL);
 
-			for (int i = WALL_LENGTH; i < Default.MAX_VERTICAL; i += WALL_LENGTH)
+			for (int i = waLength; i < Default.MAX_VERTICAL; i += waLength)
 				g.drawLine(0, i, Default.MAX_HORIZONTAL, i);
 		}
 
-		for (TestRoom el : testRooms)
-			el.paint(g);
+//		for (TestRoom el : testRooms)
+//			el.paint(g);
 
 		for (Chamber el : chambers)
 			el.paint(g);

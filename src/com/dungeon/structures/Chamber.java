@@ -62,7 +62,7 @@ public class Chamber extends Polygon {
 	}
 
 	public int numberOfSegments() {
-		return perimeter() / dungeon.WALL_LENGTH;
+		return perimeter() / Default.WALL_LENGTH;
 	}
 
 	private void initializeDoors() {
@@ -75,7 +75,7 @@ public class Chamber extends Polygon {
 	}
 
 	public void checkForDoors(int doors) {
-		int waLength = dungeon.WALL_LENGTH;
+		int waLength = Default.WALL_LENGTH;
 		int l = length / waLength;
 		int h = height / waLength;
 
@@ -131,24 +131,19 @@ public class Chamber extends Polygon {
 
 	public boolean validChamber() {
 		boolean valid = Default.inBounds(this);
+		Default.cursor.setShape(this);
 
-		if (valid) {
-			Default.cursor.setShape(this);
-			for (Passage el : dungeon.passages) {
-				if (el.collision(Default.cursor)) {
-					valid = false;
-					break;
-				}
+		for (Passage el : dungeon.passages) {
+			if (el.collision(Default.cursor)) {
+				valid = false;
+				break;
 			}
 		}
 
-		if (valid) {
-			Default.cursor.setShape(this);
-			for (Chamber el : dungeon.chambers) {
-				if (el.collision(Default.cursor)) {
-					valid = false;
-					break;
-				}
+		for (Chamber el : dungeon.chambers) {
+			if (el.collision(Default.cursor)) {
+				valid = false;
+				break;
 			}
 		}
 
@@ -226,7 +221,7 @@ public class Chamber extends Polygon {
 
 	public static Chamber makeChamber(Floor dungeon, Point p, Orientation o, int length, int width) {
 		ArrayList<Chamber> list = new ArrayList<Chamber>();
-		int l, h, waLength = dungeon.WALL_LENGTH;
+		int l, h, waLength = Default.WALL_LENGTH;
 
 		if (Orientation.isNorthOrSouth(o)) {
 			l = width;

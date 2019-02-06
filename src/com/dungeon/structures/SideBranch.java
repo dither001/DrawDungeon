@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
+import com.dungeon.misc.*;
 
 public class SideBranch extends Passage {
 	public boolean isRightTurn;
@@ -37,7 +38,7 @@ public class SideBranch extends Passage {
 
 			Orientation o = isRightTurn ? orient.clockwise() : orient.counterClockwise();
 			Point forP = nextPoint(), sideP = null;
-			int l = dungeon.WALL_LENGTH;
+			int l = Default.WALL_LENGTH;
 
 			switch (orient) {
 			case EAST:

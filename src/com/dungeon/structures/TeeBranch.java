@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import com.dungeon.geometry.*;
+import com.dungeon.misc.*;
 
 public class TeeBranch extends Passage {
 
@@ -34,7 +35,7 @@ public class TeeBranch extends Passage {
 		int bottom = (int) origin.y + height;
 		int right = (int) origin.x + length;
 
-		g.setColor(Color.MAGENTA);
+		g.setColor(Color.WHITE);
 		g.fillRect((int) origin.x, (int) origin.y, length, height);
 
 		g.setColor(Color.BLACK);
@@ -55,7 +56,7 @@ public class TeeBranch extends Passage {
 
 			Orientation lo = orient.clockwise(), ro = orient.counterClockwise();
 			Point lp = null, rp = null;
-			int l = dungeon.WALL_LENGTH;
+			int l = Default.WALL_LENGTH;
 
 			if (orient.isNorth()) {
 				rp = origin.clone();

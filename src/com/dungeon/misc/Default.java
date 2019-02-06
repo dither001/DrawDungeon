@@ -12,6 +12,7 @@ public abstract class Default {
 
 	public static final Point MIDPOINT = new Point(MAX_HORIZONTAL * 0.5, MAX_VERTICAL * 0.5);
 
+	public static final int WALL_LENGTH = 10;
 	public static Cursor cursor;
 
 	/*
@@ -54,4 +55,5 @@ public abstract class Default {
 
 		return inBounds;
 	}
+
 }
